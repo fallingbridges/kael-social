@@ -642,29 +642,73 @@ export const SEED_SITUATIONS = [
   },
 ]
 
-// ——— the You tab: Kael's read on you (patterns, not scores) ———
-export const READ_ON_YOU = [
+// ——— the You tab: identity, skill journeys, and growth receipts ———
+
+export const ARCHETYPE = {
+  name: 'The Overthinking Charmer',
+  desc: "Quick wit, deep reads, genuinely warm — occasionally builds a full conspiracy board out of one 'k'.",
+  next: 'The Calm Reader',
+  nextNote: 'two more situations handled like last Tuesday and you evolve',
+  progress: 70,
+}
+
+export const SKILL_JOURNEYS = [
   {
-    text: "You overexplain when you're nervous — the paragraphs get longer as the stakes get higher.",
-    from: 'seen across 4 situations',
+    key: 'Reading people',
+    stage: 'Pattern Spotter',
+    step: 4,
+    of: 5,
+    evidence: 'you called the boss thing before I did.',
   },
   {
-    text: "You read silence as rejection. So far it's been busyness three times out of four.",
-    from: 'your texting situations',
+    key: 'Speaking up',
+    stage: 'Finding the Voice',
+    step: 3,
+    of: 5,
+    evidence: '"let me land this thought" — and it landed.',
   },
   {
-    text: 'You make it a joke when things get vulnerable. Funny is your armor — it works, but it costs you closeness.',
-    from: 'seen twice',
+    key: 'Conflict',
+    stage: 'De-escalator in Training',
+    step: 3,
+    of: 5,
+    evidence: 'you exited the public round with grace.',
   },
   {
-    text: 'You avoid asking directly for what you want — the real ask is usually hiding in your third paragraph.',
-    from: 'work + dating',
-    cta: 'Work on this with me →',
-    flowId: 'direct-ask',
+    key: 'Dating & ambiguity',
+    stage: 'Fan-Fiction Author',
+    step: 2,
+    of: 5,
+    evidence: "the 'k' incident. we don't need to relive it.",
+  },
+  {
+    key: 'Boundaries',
+    stage: 'Recovering Yes-Sayer',
+    step: 2,
+    of: 5,
+    evidence: 'one clean no last week. zero apologies. historic.',
+    cta: 'Train this with me →',
+    flowId: 'say-no',
   },
 ]
 
-export const STILL_FORMING = {
-  text: 'How you handle conflict with family',
-  note: "no read yet — a couple more situations and I'll have one.",
-}
+export const RECEIPTS = [
+  {
+    then: 'Triple-texted the second she went quiet',
+    thenWhen: '3 weeks ago',
+    now: 'Waited it out — she texted first',
+    nowWhen: 'last week',
+  },
+  {
+    then: 'Said yes to a favor you dreaded for days',
+    thenWhen: 'last month',
+    now: 'First clean no. No apology spiral after',
+    nowWhen: 'this week',
+  },
+  {
+    then: 'Went silent when your boss interrupted',
+    thenWhen: '3 weeks ago',
+    now: 'Held the floor: "let me land this thought"',
+    nowWhen: 'monday',
+  },
+]

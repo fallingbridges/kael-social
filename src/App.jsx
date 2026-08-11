@@ -132,10 +132,10 @@ export default function App() {
     kaelSays(id, next.blocks, option.next)
   }
 
-  // "Work on this with me →" from the You tab
-  function workOn(observation) {
+  // "Train this with me →" from the You tab
+  function workOn(skill) {
     setTab('home')
-    newSituation('I want to get better at asking directly for what I want', observation.flowId)
+    newSituation('I keep folding when I try to say no — train me', skill.flowId)
   }
 
   return (

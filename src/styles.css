@@ -804,34 +804,145 @@ input { font-family: inherit; }
 .sit-arrow { color: var(--ink-faint); font-size: 15px; flex-shrink: 0; }
 .sit-when { display: block; font-size: 11.5px; color: var(--ink-faint); font-weight: 500; margin-top: 2px; }
 
-/* ————— You tab: Kael's read on you ————— */
+/* ————— You tab: archetype, journeys, receipts ————— */
 
-.you-card {
+.arch-card {
+  position: relative;
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: var(--r-lg);
+  padding: 20px 18px 18px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  box-shadow: 0 16px 36px -14px rgba(36, 27, 22, 0.55);
+  animation: msg-in 0.5s both;
+}
+.arch-card::before {
+  content: '';
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 180px;
+  height: 180px;
+  border-radius: 46% 54% 52% 48% / 54% 46% 54% 46%;
+  background: radial-gradient(circle at 30% 30%, #ff7a4d, var(--coral-deep));
+  opacity: 0.55;
+  animation: squish 7s ease-in-out infinite;
+}
+.arch-label {
+  position: relative;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--butter);
+  margin-bottom: 8px;
+}
+.arch-name {
+  position: relative;
+  font-family: var(--display);
+  font-size: 27px;
+  font-weight: 700;
+  line-height: 1.05;
+  margin-bottom: 8px;
+}
+.arch-desc {
+  position: relative;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: #dccfc2;
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+.arch-next { position: relative; }
+.arch-next-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 12.5px;
+  color: #cbbdb1;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+.arch-next-top b { color: var(--paper); font-weight: 700; }
+.arch-pct { font-family: var(--display); font-size: 15px; font-weight: 700; color: var(--butter); }
+.arch-bar { height: 10px; border-radius: 999px; background: #3c322b; overflow: hidden; }
+.arch-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--butter), var(--coral));
+  transition: width 1.2s cubic-bezier(0.3, 0.8, 0.3, 1);
+  animation: fill-in 1.2s 0.3s cubic-bezier(0.3, 0.8, 0.3, 1) both;
+}
+@keyframes fill-in { from { width: 0; } }
+.arch-note { font-size: 11.5px; color: #a5968a; font-weight: 500; margin-top: 7px; font-style: italic; }
+
+.j-row {
   background: var(--card);
   border: 1.5px solid var(--line);
   border-radius: var(--r-md);
   box-shadow: var(--shadow-card);
-  padding: 15px 16px;
-  margin-bottom: 11px;
+  padding: 13px 15px;
+  margin-bottom: 10px;
   animation: msg-in 0.5s both;
 }
-.you-card.forming { background: transparent; border-style: dashed; box-shadow: none; }
-.you-text { font-size: 14.5px; line-height: 1.5; font-weight: 500; }
-.you-foot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-top: 10px;
-  flex-wrap: wrap;
+.j-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.j-top b { font-size: 14.5px; font-weight: 600; }
+.j-dots { display: flex; gap: 5px; }
+.j-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--paper-2);
+  border: 1.5px solid var(--line);
 }
-.you-from {
+.j-dot.on { background: var(--coral); border-color: var(--coral); }
+.j-stage {
+  display: inline-block;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  color: var(--coral-deep);
+  background: var(--coral-soft);
+  padding: 4px 10px;
+  border-radius: 999px;
+  margin: 8px 0 7px;
+}
+.j-evidence { font-size: 12.5px; color: var(--ink-soft); font-style: italic; line-height: 1.45; }
+.j-row .you-cta { margin-top: 10px; }
+
+.receipt {
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-card);
+  padding: 6px 8px;
+  margin-bottom: 10px;
+  animation: msg-in 0.5s both;
+}
+.r-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 9px;
+  border-radius: var(--r-sm);
+}
+.r-line.then { opacity: 0.62; }
+.r-line.now { background: var(--sage-soft); }
+.r-tag {
+  flex-shrink: 0;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  width: 34px;
   color: var(--ink-faint);
 }
+.r-line.now .r-tag { color: #35622f; }
+.r-line p { flex: 1; font-size: 13px; font-weight: 600; line-height: 1.35; }
+.r-when { flex-shrink: 0; font-size: 10.5px; color: var(--ink-faint); font-weight: 600; }
+
 .you-cta {
   font-size: 13px;
   font-weight: 700;
