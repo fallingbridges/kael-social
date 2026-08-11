@@ -1169,18 +1169,18 @@ export const SEED_SITUATIONS = [
 // every skill has a live drill — tap it, practice immediately.
 
 export const SKILLS = [
-  { skill: 'Confidence', emoji: '🦁', id: 'drill-walkin', drillName: 'The Walk-In', tint: 'coral' },
-  { skill: 'Storytelling', emoji: '🎭', id: 'drill-story', drillName: 'The Rambling Story', tint: 'butter' },
-  { skill: 'Boundaries', emoji: '🛑', id: 'drill-guilt', drillName: 'The Guilt-Tripper', tint: 'sage' },
-  { skill: 'Small talk', emoji: '☕', id: 'drill-deadend', drillName: 'The Dead End', tint: 'butter' },
-  { skill: 'Flirting', emoji: '💘', id: 'drill-compliment', drillName: 'The Compliment', tint: 'coral' },
-  { skill: 'Humor', emoji: '😏', id: 'drill-bomb', drillName: 'The Bomb', tint: 'sage' },
-  { skill: 'Speaking up', emoji: '🎤', id: 'drill-interrupt', drillName: 'The Interrupter', tint: 'sage' },
-  { skill: 'Reading people', emoji: '🔮', id: 'drill-signals', drillName: 'The Mixed Signals', tint: 'coral' },
-  { skill: 'Listening', emoji: '👂', id: 'drill-vent', drillName: 'The Vent', tint: 'butter' },
-  { skill: 'Conflict', emoji: '🧯', id: 'drill-snap', drillName: 'The Snap', tint: 'coral' },
-  { skill: 'Negotiation', emoji: '💰', id: 'drill-lowball', drillName: 'The Lowball', tint: 'butter' },
-  { skill: 'Texting', emoji: '📱', id: 'drill-cold', drillName: 'The Cold Text', tint: 'sage' },
+  { skill: 'Confidence', emoji: '🦁', id: 'drill-walkin', drillName: 'The Walk-In', sub: 'Walk in like you belong', tint: 'coral', reps: 0 },
+  { skill: 'Storytelling', emoji: '🎭', id: 'drill-story', drillName: 'The Rambling Story', sub: 'Make them lean in', tint: 'butter', reps: 1 },
+  { skill: 'Boundaries', emoji: '🛑', id: 'drill-guilt', drillName: 'The Guilt-Tripper', sub: 'Say no, keep the friend', tint: 'sage', reps: 2 },
+  { skill: 'Small talk', emoji: '☕', id: 'drill-deadend', drillName: 'The Dead End', sub: 'Turn nothing into something', tint: 'butter', reps: 0 },
+  { skill: 'Flirting', emoji: '💘', id: 'drill-compliment', drillName: 'The Compliment', sub: 'Charm without cringe', tint: 'coral', reps: 0 },
+  { skill: 'Humor', emoji: '😏', id: 'drill-bomb', drillName: 'The Bomb', sub: 'Bomb-proof your funny', tint: 'sage', reps: 0 },
+  { skill: 'Speaking up', emoji: '🎤', id: 'drill-interrupt', drillName: 'The Interrupter', sub: 'Take your airtime back', tint: 'sage', reps: 1 },
+  { skill: 'Reading people', emoji: '🔮', id: 'drill-signals', drillName: 'The Mixed Signals', sub: 'See signal, skip the story', tint: 'coral', reps: 3 },
+  { skill: 'Listening', emoji: '👂', id: 'drill-vent', drillName: 'The Vent', sub: 'Make people feel heard', tint: 'butter', reps: 0 },
+  { skill: 'Conflict', emoji: '🧯', id: 'drill-snap', drillName: 'The Snap', sub: 'Cool the room, keep the bond', tint: 'coral', reps: 0 },
+  { skill: 'Negotiation', emoji: '💰', id: 'drill-lowball', drillName: 'The Lowball', sub: 'Say the number. Hold it.', tint: 'butter', reps: 0 },
+  { skill: 'Texting', emoji: '📱', id: 'drill-cold', drillName: 'The Cold Text', sub: 'Decode without spiraling', tint: 'sage', reps: 1 },
 ]
 
 export const RECOMMENDED = {
@@ -1188,10 +1188,3 @@ export const RECOMMENDED = {
   skill: 'Boundaries',
   because: 'How do I say no?',
 }
-
-export const TRAINING = [
-  { skill: 'Boundaries', note: 'trained 2× this week', hot: true },
-  { skill: 'Speaking up', note: 'trained once this week', hot: true },
-  { skill: 'Texting', note: 'not yet this week' },
-  { skill: 'Negotiation', note: 'new — first rep waiting' },
-]
