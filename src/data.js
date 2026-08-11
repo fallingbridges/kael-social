@@ -1,211 +1,611 @@
-// ——— Kael's canned brain: keyword-matched scripted replies for the prototype ———
+// ——— Kael's brain v2: situation flows ———
+// A situation walks a flow graph: each node = Kael blocks + chips.
+// chip.next → node id, or 'resolve' → reflection card + XP.
+// node.onFree → node to advance to on free-typed text (when Kael asked an open question).
 
-export const GREETING = [
-  { type: 'text', text: "hey, it's kael 👋 your social life, decoded." },
-  {
-    type: 'text',
-    text: "who are we overanalyzing today? paste a text, describe a situation, or hit a shortcut below.",
-  },
+const t = (text) => ({ type: 'text', text })
+
+export const CATEGORIES = [
+  { id: 'convo', emoji: '💬', label: 'A conversation', send: "I never know how to keep a conversation going past small talk." },
+  { id: 'dating', emoji: '❤️', label: 'Dating', send: 'She read my message yesterday and just replied "k".' },
+  { id: 'work', emoji: '💼', label: 'Work', send: 'My manager criticized my work in front of everyone and I got defensive.' },
+  { id: 'conflict', emoji: '⚡', label: 'Conflict', send: 'My friend made a passive-aggressive comment and I shut down.' },
+  { id: 'family', emoji: '👥', label: 'Friends / family', send: "My sister keeps asking me for favors and I can't say no." },
 ]
 
-export const CHIPS = [
-  { id: 'decode', emoji: '🔍', label: 'Decode a text', send: 'Decode this text: "lol ok cool cool"' },
-  { id: 'flirt', emoji: '💘', label: 'Flirt assist', send: 'Help me flirt — what do I text back?' },
-  { id: 'fight', emoji: '🧯', label: 'Fight going bad', send: "We're mid-fight and it's spiraling. Help." },
-  { id: 'raise', emoji: '💰', label: 'Ask for more', send: 'I want to negotiate my salary tomorrow.' },
-  { id: 'speak', emoji: '🎤', label: 'Speak up', send: 'I never speak up in meetings. Fix me.' },
-]
+export const FLOWS = {
+  // ————— public criticism at work —————
+  'boss-criticism': {
+    title: 'Criticized in front of everyone',
+    emoji: '💼',
+    keywords: ['boss', 'manager', 'criticiz', 'in front of everyone', 'interrupted'],
+    reflection: {
+      insight: "You tend to respond fast when your competence is questioned. Speed is the tell — in a status moment, the strongest move is usually the slowest one.",
+      skill: 'Handling public criticism',
+      skillKey: 'Conflict',
+      xp: 8,
+    },
+    nodes: {
+      start: {
+        blocks: [
+          t("oof. public criticism hits different — your nervous system files it under *attack*, not *feedback*. that defensiveness was biology doing its job."),
+          t('before I coach you — what bothered you most?'),
+        ],
+        options: [
+          { label: 'Being embarrassed', next: 'embarrassed' },
+          { label: 'Feeling disrespected', next: 'disrespected' },
+          { label: 'That he was wrong', next: 'wrong' },
+          { label: "I don't know", next: 'unsure' },
+        ],
+      },
+      embarrassed: {
+        blocks: [
+          t("that tracks. the audience is what turned feedback into threat — the same words 1:1 would've stung a tenth as much."),
+          {
+            type: 'coach',
+            title: 'the trap',
+            points: [
+              'Defending your competence *in the room* makes the conversation about status, not the work.',
+              'The audience remembers your composure far longer than his point.',
+              'You want to acknowledge the useful part without accepting the humiliation.',
+            ],
+          },
+        ],
+        chips: [
+          { label: 'What should I say?', next: 'say' },
+          { label: 'Help me read him', next: 'read' },
+          { label: 'Practice this with me', next: 'practice' },
+        ],
+      },
+      disrespected: {
+        blocks: [
+          t("legit. and here's the distinction that changes your next move: disrespect is about *how* it was delivered, not *whether* he had a point. you can concede the point and still address the delivery."),
+          {
+            type: 'coach',
+            title: 'the trap',
+            points: [
+              'Swallowing it teaches him the delivery is free.',
+              'Blowing up in the room hands him the high ground.',
+              'The move: address the delivery privately, calmly, once.',
+            ],
+          },
+        ],
+        chips: [
+          { label: 'What should I say?', next: 'say' },
+          { label: 'Help me read him', next: 'read' },
+          { label: 'Practice this with me', next: 'practice' },
+        ],
+      },
+      wrong: {
+        blocks: [
+          t("ah — so it's a *facts* problem wearing a *feelings* costume. careful: being right and being seen as right are two separate battles, and the second one is never won mid-meeting."),
+          {
+            type: 'coach',
+            title: 'the trap',
+            points: [
+              "Correcting him publicly forces him to defend his status, not evaluate your data.",
+              'Let the room cool. Bring receipts 1:1, framed as "help me reconcile this."',
+              "If he's wrong, the numbers will humiliate him privately so you don't have to publicly.",
+            ],
+          },
+        ],
+        chips: [
+          { label: 'What should I say?', next: 'say' },
+          { label: 'Help me read him', next: 'read' },
+          { label: 'Practice this with me', next: 'practice' },
+        ],
+      },
+      unsure: {
+        blocks: [
+          t("that's honest — and usually it means all three at once: embarrassed, disrespected, and convinced he missed the point. tangled feelings make people lash out or shut down."),
+          {
+            type: 'coach',
+            title: 'untangling it',
+            points: [
+              'Name it to tame it: "I got defensive because that felt public and personal."',
+              'You only need to solve ONE thread today. The relationship repair can wait a day.',
+              'The work question and the respect question need different conversations.',
+            ],
+          },
+        ],
+        chips: [
+          { label: 'What should I say?', next: 'say' },
+          { label: 'Help me read him', next: 'read' },
+          { label: 'Practice this with me', next: 'practice' },
+        ],
+      },
+      say: {
+        blocks: [
+          t("here's your script — pick the flavor that sounds like you, not the one that sounds impressive:"),
+          {
+            type: 'says',
+            options: [
+              { tone: 'Composed', text: "You had a point about the deadline. The way it landed in the room though — I'd rather get that feedback 1:1. I take it better and you get a better result." },
+              { tone: 'In the moment', text: "Good catch — let's fix it. I'll grab you after this to go deeper." },
+              { tone: 'Receipts', text: "I want to make sure we're looking at the same numbers — can we take 15 minutes tomorrow to reconcile?" },
+            ],
+          },
+        ],
+        chips: [
+          { label: 'Help me read him', next: 'read' },
+          { label: 'Practice this with me', next: 'practice' },
+        ],
+      },
+      read: {
+        blocks: [
+          {
+            type: 'vibe',
+            value: 62,
+            label: 'threat reading',
+            verdict: 'insecure, not evil',
+            note: 'public criticism is usually a status display for HIS audience — his boss, the room. you were the prop, not the target.',
+          },
+          {
+            type: 'flags',
+            red: ['Does it in front of seniors = performing', 'Pattern, not one-off? Then it\'s strategy'],
+            green: ['Critique was about work, not you as a person', "Hasn't blocked your actual growth"],
+          },
+          t("watch ONE thing next meeting: does he critique others publicly too, or just you? that answer changes everything."),
+        ],
+        chips: [
+          { label: 'What should I say?', next: 'say' },
+          { label: 'Practice this with me', next: 'practice' },
+        ],
+      },
+      practice: {
+        blocks: [
+          t("ok, roleplay. I'm your manager. we're in the meeting, everyone's watching. ready?"),
+          { type: 'roleplay', as: 'your manager', text: "Honestly, this analysis misses the point entirely. Did you even look at the Q3 numbers?" },
+          t('what do you do?'),
+        ],
+        options: [
+          { label: '"I did, and I stand by it — the Q3 data supports exactly this."', next: 'practice-defend' },
+          { label: '"Fair challenge — let\'s look at Q3 together after this."', next: 'practice-good' },
+          { label: 'Stay quiet, fix it later', next: 'practice-quiet' },
+        ],
+      },
+      'practice-defend': {
+        blocks: [
+          t("see what happened? you're now litigating Q3 in front of an audience — his frame, his tempo. even if you win the point you look rattled."),
+          t('try the version that takes the ball and exits the arena: "fair challenge — let\'s look at Q3 together after this." you concede nothing AND end the public round.'),
+        ],
+        chips: [{ label: 'Run it again', next: 'practice' }],
+      },
+      'practice-good': {
+        blocks: [
+          t("💯 that's the move. you sounded open, not defeated — and you moved the fight to a room where facts beat theater."),
+          t("notice what it does: the audience sees composure, he loses his stage, and Q3 gets settled where it can actually be settled."),
+        ],
+        chips: [{ label: 'Run it again', next: 'practice' }],
+      },
+      'practice-quiet': {
+        blocks: [
+          t("safe, but it leaks. silence in the room + fixing it later reads as agreement — he learns the delivery works, and the room learns you absorb hits."),
+          t('you need ONE sentence of presence before exiting: "fair challenge — let\'s look at Q3 after this." then go be right in private.'),
+        ],
+        chips: [{ label: 'Run it again', next: 'practice' }],
+      },
+    },
+  },
 
-const DECODE_REPLY = [
-  {
-    type: 'text',
-    text: "ok. “lol ok cool cool” — four words, zero punctuation, maximum vibes withheld. let's run it through the lab 🧪",
+  // ————— left on read / one-letter replies —————
+  'left-on-read': {
+    title: 'She replied "k"',
+    emoji: '❤️',
+    keywords: ['"k"', "'k'", 'left on read', "hasn't replied", 'hasnt replied', 'read my message', 'ghost', 'distant'],
+    reflection: {
+      insight: 'You mistake ambiguity for rejection. The silence started a story in your head — and you almost replied to the story instead of the person.',
+      skill: 'Sitting with ambiguity',
+      skillKey: 'Reading people',
+      xp: 6,
+    },
+    nodes: {
+      start: {
+        blocks: [
+          t('a one-letter reply. the rorschach test of texting — it means everything and nothing, which is why your brain is currently writing fan-fiction.'),
+          t('context first: how long has this been going?'),
+        ],
+        options: [
+          { label: 'First couple weeks', next: 'early' },
+          { label: 'A few months in', next: 'months' },
+          { label: "It's my ex", next: 'ex' },
+          { label: 'Long-term partner', next: 'partner' },
+        ],
+      },
+      early: {
+        blocks: [
+          {
+            type: 'vibe',
+            value: 41,
+            label: 'interest reading',
+            verdict: 'cooling, not cold',
+            note: 'early stage + effort drop = attention drifting. but "k" after a logistics text means nothing — WHAT she k\'d matters more than the k.',
+          },
+          t("real talk: what did she 'k' exactly? if it was a plan confirmation, you're fine. if it was a bid for connection, the data's worse."),
+        ],
+        chips: [
+          { label: 'What should I text back?', next: 'say' },
+          { label: 'Should I even reply?', next: 'wait' },
+        ],
+      },
+      months: {
+        blocks: [
+          {
+            type: 'vibe',
+            value: 55,
+            label: 'interest reading',
+            verdict: 'a mood, probably not a verdict',
+            note: "a few months in, 'k' is more often a bad day than a fading heart. pattern beats datapoint: is effort down across the week, or just tonight?",
+          },
+          t("one 'k' = noise. three low-effort days = signal. which one are we looking at?"),
+        ],
+        chips: [
+          { label: 'What should I text back?', next: 'say' },
+          { label: 'Should I even reply?', next: 'wait' },
+        ],
+      },
+      ex: {
+        blocks: [
+          t("an ex sending 'k' isn't a puzzle, it's a boundary — theirs or yours, someone's drawing one."),
+          {
+            type: 'flags',
+            red: ["You're decoding an ex's punctuation — that's the actual flag 🚩", 'Re-opening this thread reopens the wound'],
+            green: ['You noticed and came here instead of triple-texting. growth.'],
+          },
+        ],
+        chips: [
+          { label: 'Help me let this go', next: 'letgo' },
+          { label: 'What should I text back?', next: 'say' },
+        ],
+      },
+      partner: {
+        blocks: [
+          t("in a long-term thing, 'k' over text usually means the real conversation is waiting at home. don't have it in the thread."),
+          {
+            type: 'coach',
+            title: 'the move',
+            points: [
+              "Don't match the coldness — that's how spirals start.",
+              'One warm, zero-pressure text: "feels like something\'s off — I\'m around when you want to talk."',
+              'Then actually talk. In person. Phones down.',
+            ],
+          },
+        ],
+        chips: [{ label: 'What should I text back?', next: 'say' }],
+      },
+      say: {
+        blocks: [
+          t("options — and notice none of them mention the 'k'. never audit their punctuation out loud:"),
+          {
+            type: 'says',
+            options: [
+              { tone: 'Playful', text: 'a whole letter?? for me?? 🥹 ok but actually — how was the thing today?' },
+              { tone: 'Chill', text: '(nothing. post your good day on the story instead. let curiosity work.)' },
+              { tone: 'Direct', text: "you're short with me today — all good, or should we talk?" },
+            ],
+          },
+        ],
+        chips: [{ label: 'Should I even reply?', next: 'wait' }],
+      },
+      wait: {
+        blocks: [
+          {
+            type: 'coach',
+            title: 'the 24-hour rule',
+            points: [
+              "Low-effort in, low-urgency back. Don't reward 'k' with a paragraph.",
+              'Go live your day loudly — the best reply to distance is a full life.',
+              "If the energy doesn't return in a few days, ask directly ONCE. Then believe the answer.",
+            ],
+          },
+        ],
+        chips: [{ label: 'What should I text back?', next: 'say' }],
+      },
+      letgo: {
+        blocks: [
+          t("here's the reframe: closure isn't something they send you. it's something you decide."),
+          {
+            type: 'coach',
+            title: 'the protocol',
+            points: [
+              'Mute, don\'t block (blocking is still a message).',
+              "Every urge to decode them, redirect: text a friend who actually replies.",
+              'The 90% rule: you already know. The decoding is just delay.',
+            ],
+          },
+        ],
+        chips: [],
+      },
+    },
   },
-  {
-    type: 'vibe',
-    value: 34,
-    label: 'interest reading',
-    verdict: 'guarded, not gone',
-    note: "double “cool” = filling silence, not enthusiasm. the “lol” is doing damage control.",
-  },
-  {
-    type: 'flags',
-    red: ['No question back', 'Mirror-energy: low effort in, low effort out'],
-    green: ['Still replying fast', "Didn't leave you on read"],
-  },
-  {
-    type: 'text',
-    text: "verdict: they're lukewarm on the topic, not on you. change the channel — don't reheat this thread. try one of these:",
-  },
-  {
-    type: 'says',
-    options: [
-      { tone: 'Playful', text: "ok that was my worst pitch. new topic: rate your week 1–10, no 7s allowed" },
-      { tone: 'Direct', text: "you sound half-in. wanna just call for 5 min instead?" },
-      { tone: 'Chill', text: "haha fair. what are you actually up to this weekend?" },
-    ],
-  },
-]
 
-const FLIRT_REPLY = [
-  { type: 'text', text: "say less. flirting is just confidence + specificity + a little mischief 😏" },
-  {
-    type: 'text',
-    text: "rule of thumb: compliment the choice, not the body. tease the thing they're clearly proud of. and always end on a hook they *want* to answer.",
+  // ————— saying no —————
+  'say-no': {
+    title: 'How do I say no?',
+    emoji: '🛑',
+    keywords: ["say no", "can't say no", 'cant say no', 'favor', 'babysit', 'turn down', 'tell him no', 'tell her no'],
+    reflection: {
+      insight: 'You pad your no with apologies until it sounds like a maybe — then people push on the maybe, and you fold on the push.',
+      skill: 'Clean boundaries',
+      skillKey: 'Boundaries',
+      xp: 7,
+    },
+    nodes: {
+      start: {
+        blocks: [
+          t("good news: 'no' is a complete sentence. bad news: not for people who've had a lifetime subscription to your yes."),
+          t('what makes THIS no hard?'),
+        ],
+        options: [
+          { label: "They'll be hurt", next: 'hurt' },
+          { label: "They'll push back", next: 'push' },
+          { label: 'I owe them', next: 'owe' },
+          { label: 'I always say yes', next: 'always' },
+        ],
+      },
+      hurt: {
+        blocks: [
+          t("their disappointment is real — and survivable. you've been treating it as an emergency you must prevent. it's just weather."),
+          {
+            type: 'coach',
+            title: 'the warm no',
+            points: [
+              'Warmth in the tone, firmness in the content. Never the reverse.',
+              "Don't over-explain. Three reasons sound like three doors to argue with.",
+              'You can care about their feelings without carrying their feelings.',
+            ],
+          },
+        ],
+        chips: [
+          { label: 'Give me the words', next: 'say' },
+          { label: 'What if they guilt-trip me?', next: 'guilt' },
+        ],
+      },
+      push: {
+        blocks: [
+          t("pushback isn't a sign your no was wrong — it's a sign your no was inconvenient. those are different things."),
+          {
+            type: 'coach',
+            title: 'the broken record',
+            points: [
+              'Same sentence, same warm tone, every push: "I get it — still can\'t this time."',
+              "Each new excuse you offer is a new handle for them to grab.",
+              'Silence after your no is not an invitation to fill it.',
+            ],
+          },
+        ],
+        chips: [
+          { label: 'Give me the words', next: 'say' },
+          { label: 'What if they guilt-trip me?', next: 'guilt' },
+        ],
+      },
+      owe: {
+        blocks: [
+          t("debts between people who love each other don't compound like this. if the ledger only ever runs one direction, it's not a ledger — it's a leash."),
+          t("you can honor what they've done for you AND decline this ask. gratitude is not an unlimited credit line."),
+        ],
+        chips: [
+          { label: 'Give me the words', next: 'say' },
+          { label: 'What if they guilt-trip me?', next: 'guilt' },
+        ],
+      },
+      always: {
+        blocks: [
+          t("then this first no is going to feel earthquake-sized to you and mildly surprising to them. that gap is the anxiety talking."),
+          {
+            type: 'coach',
+            title: 'why the first no matters',
+            points: [
+              "Every yes you didn't mean taught them your time is free.",
+              "The first no re-prices it. Expect one confused blink, not a rupture.",
+              "People who only like you when you're useful were never the audience for your boundaries anyway.",
+            ],
+          },
+        ],
+        chips: [
+          { label: 'Give me the words', next: 'say' },
+          { label: 'What if they guilt-trip me?', next: 'guilt' },
+        ],
+      },
+      say: {
+        blocks: [
+          {
+            type: 'says',
+            options: [
+              { tone: 'Warm + firm', text: "I love that you thought of me — I can't take this one on. Hope it goes great." },
+              { tone: 'No reason', text: "Can't this time! Next round's on me though." },
+              { tone: 'Honest', text: "I've been saying yes past my limit lately and I'm fixing that. This one's a no — nothing to do with you." },
+            ],
+          },
+          t('notice: zero "sorry"s. an apology tells them a wrong occurred. no wrong occurred.'),
+        ],
+        chips: [{ label: 'What if they guilt-trip me?', next: 'guilt' }],
+      },
+      guilt: {
+        blocks: [
+          { type: 'roleplay', as: 'them', text: 'Wow. Okay. I guess I just remember all the times I helped YOU…' },
+          {
+            type: 'coach',
+            title: 'guilt-trip disarm',
+            points: [
+              'Name it gently: "sounds like you\'re disappointed — that\'s fair."',
+              'Re-state, don\'t re-argue: "still can\'t this time."',
+              'Do NOT match the escalation. Calm is the whole game.',
+            ],
+          },
+        ],
+        chips: [{ label: 'Give me the words', next: 'say' }],
+      },
+    },
   },
-  {
-    type: 'says',
-    options: [
-      { tone: 'Bold', text: "I was going to play it cool for 3 more days but you're too interesting for that" },
-      { tone: 'Teasing', text: "you have strong “ordered the best thing on the menu” energy. prove me right or wrong Thursday?" },
-      { tone: 'Sweet', text: "talking to you is the best part of my scroll. lowering my standards for everyone else accordingly" },
-    ],
-  },
-  {
-    type: 'coach',
-    title: 'micro-lesson · 20 sec',
-    points: [
-      'Specific > smooth. Reference a real detail they shared.',
-      'One question per text. Interviews are for jobs.',
-      'Send it and put the phone down. Marinating kills charm.',
-    ],
-  },
-]
 
-const FIGHT_REPLY = [
-  { type: 'text', text: "breathe. you can't win a fight, you can only win the repair 🧯" },
-  {
-    type: 'coach',
-    title: 'de-escalation protocol',
-    points: [
-      "Drop the scoreboard — stop building your counter-argument while they talk.",
-      "Name the feeling, not the crime: “I'm hurt” lands, “you always” detonates.",
-      "Ask the magic question: “what do you need from me right now?”",
-      "20-min timeout is legal. Leaving forever-energy is not.",
-    ],
+  // ————— taught lesson from Growth: direct asks —————
+  'direct-ask': {
+    title: 'Asking directly',
+    emoji: '🎯',
+    keywords: ['teach me to ask directly'],
+    reflection: {
+      insight: 'Hinting protects you from a "no" by making sure there was never really a question. Direct asks risk the no — and get the yes.',
+      skill: 'Direct asks',
+      skillKey: 'Assertiveness',
+      xp: 5,
+    },
+    nodes: {
+      start: {
+        blocks: [
+          t("ok — the direct ask, the skill you've been orbiting in three separate situations 👀"),
+          {
+            type: 'coach',
+            title: 'the anatomy of a direct ask',
+            points: [
+              'Name the want: "I\'d like…" — not "would it maybe be possible…"',
+              'One sentence. The longer the ask, the weaker it sounds.',
+              "Silence after asking. Whoever fills it first is negotiating with themselves.",
+              'A "no" to a direct ask stings less than a lifetime of unheard hints. That\'s the trade.',
+            ],
+          },
+          {
+            type: 'says',
+            options: [
+              { tone: 'At work', text: "I'd like to lead the next client project. What would it take?" },
+              { tone: 'Dating', text: "I like you. I'd rather see you Friday than keep texting. You in?" },
+              { tone: 'Friends', text: 'Can you actually be on time Saturday? It matters to me.' },
+            ],
+          },
+        ],
+        chips: [],
+      },
+    },
   },
-  {
-    type: 'says',
-    options: [
-      { tone: 'Repair', text: "I care more about us than about winning this. Can we restart?" },
-      { tone: 'Boundary', text: "I want to hear you, but not at this volume. 20 minutes, then we finish this properly." },
-    ],
-  },
-  { type: 'text', text: "want me to decode what they said, or rehearse your opener for round two?" },
-]
 
-const RAISE_REPLY = [
-  { type: 'text', text: "love this for you 💰 negotiation is a script game — and we're writing yours tonight." },
-  {
-    type: 'vibe',
-    value: 78,
-    label: 'leverage reading',
-    verdict: 'stronger than you think',
-    note: 'replacing you costs them 6–9 months of ramp-up. remember that when your voice tries to shrink.',
+  // ————— generic fallback —————
+  generic: {
+    title: null,
+    emoji: '💬',
+    keywords: [],
+    reflection: {
+      insight: 'You brought the situation here instead of reacting on impulse — that pause between feeling and response is the actual skill.',
+      skill: 'The pause',
+      skillKey: 'Conversation',
+      xp: 4,
+    },
+    nodes: {
+      start: {
+        blocks: [
+          t("ok, I'm listening 🧠 give me the raw material — what was said, word for word if you can. messy details welcome, that's where the truth lives."),
+        ],
+        options: [],
+        onFree: 'coached',
+      },
+      coached: {
+        blocks: [
+          t("got it. here's what I'd look at before anything else:"),
+          {
+            type: 'coach',
+            title: 'first read',
+            points: [
+              'Separate what happened from the story you\'re telling about it. Facts first, verdicts later.',
+              "Ask what they were protecting — embarrassment? status? Most weird behavior is defense, not offense.",
+              'What outcome do you actually want here? Answer that before you respond to anything.',
+            ],
+          },
+        ],
+        chips: [{ label: 'What should I say?', next: 'say' }],
+      },
+      say: {
+        blocks: [
+          {
+            type: 'says',
+            options: [
+              { tone: 'Curious', text: "Hey — that landed a bit strangely with me. What did you mean by it?" },
+              { tone: 'Honest', text: "I've been chewing on what happened. Can we talk it through properly?" },
+              { tone: 'Light', text: 'Ok that was a weird moment. Are we good?' },
+            ],
+          },
+        ],
+        chips: [],
+      },
+    },
   },
-  {
-    type: 'coach',
-    title: 'the script',
-    points: [
-      "Anchor high, with evidence: number first, feelings never.",
-      "“Based on my impact on X and market range, I'm targeting ___.”",
-      'Then SILENCE. First one to talk after the number loses.',
-      "If they say no: “what would need to be true in 90 days?” — get it in writing.",
-    ],
-  },
-  { type: 'text', text: "want to rehearse? I'll play your manager — I'll even do the disappointed sigh." },
-]
-
-const SPEAK_REPLY = [
-  { type: 'text', text: "you don't need to be louder, you need a lower bar for entry 🎤" },
-  {
-    type: 'coach',
-    title: 'the 3-sentence rule',
-    points: [
-      'Speak once in the first 10 minutes — it rewires how the room sees you.',
-      "Use a frame, not a masterpiece: “I see it differently — here's why.”",
-      "Claim interrupted airtime back: “let me land this thought.”",
-      'Perfection is a stall tactic. B-minus comments said out loud beat A+ thoughts in your head.',
-    ],
-  },
-  {
-    type: 'says',
-    options: [
-      { tone: 'Opener', text: "Before we move on — one risk I think we're underweighting…" },
-      { tone: 'Pushback', text: "I'd push back gently on that. The data we saw last week says otherwise." },
-    ],
-  },
-]
-
-const GHOST_REPLY = [
-  { type: 'text', text: "ghosted, huh. first: their silence is information, not a verdict on you 👻" },
-  {
-    type: 'vibe',
-    value: 18,
-    label: 'revival odds',
-    verdict: 'low — protect your peace',
-    note: 'one graceful check-in is allowed. double-texting past that is donating your dignity.',
-  },
-  {
-    type: 'says',
-    options: [
-      { tone: 'Graceful', text: "no stress if life got loud — door's open this week if you want to grab that drink" },
-      { tone: 'Closure', text: "taking the silence as an answer — no hard feelings. good luck out there ✌️" },
-    ],
-  },
-  { type: 'text', text: "either way: send it once, then go be unreachable and thriving. that's the whole move." },
-]
-
-const DEFAULT_REPLIES = [
-  [
-    { type: 'text', text: "interesting… give me the raw material 🧠 paste the actual text, or tell me what happened — messy details welcome, that's where the truth lives." },
-  ],
-  [
-    { type: 'text', text: "I have theories, but I work best with receipts. what did they say word-for-word? screenshots-in-prose totally count." },
-  ],
-]
-
-const ROUTES = [
-  { keys: ['decode', 'mean', 'lol ok', 'read into', 'what does'], reply: DECODE_REPLY },
-  { keys: ['flirt', 'crush', 'date', 'cute', 'text back', 'rizz'], reply: FLIRT_REPLY },
-  { keys: ['fight', 'argu', 'mad at', 'spiral', 'yelling', 'angry'], reply: FIGHT_REPLY },
-  { keys: ['raise', 'salary', 'negotiat', 'offer', 'money', 'paid'], reply: RAISE_REPLY },
-  { keys: ['speak', 'meeting', 'shy', 'quiet', 'stand up', 'confiden'], reply: SPEAK_REPLY },
-  { keys: ['ghost', 'left on read', 'no reply', 'ignor'], reply: GHOST_REPLY },
-]
-
-let defaultIdx = 0
-export function kaelReply(input) {
-  const t = input.toLowerCase()
-  for (const r of ROUTES) {
-    if (r.keys.some((k) => t.includes(k))) return r.reply
-  }
-  const reply = DEFAULT_REPLIES[defaultIdx % DEFAULT_REPLIES.length]
-  defaultIdx++
-  return reply
 }
 
-// ——— Playbooks ———
-export const PLAYBOOKS = [
-  { id: 'decode', emoji: '🔍', title: 'Decode the Text', sub: 'What did they actually mean?', tint: 'coral', send: 'Decode this text: "lol ok cool cool"' },
-  { id: 'fight', emoji: '🧯', title: 'Fight Fixer', sub: 'De-escalate & repair', tint: 'butter', send: "We're mid-fight and it's spiraling. Help." },
-  { id: 'shot', emoji: '💘', title: 'Shoot Your Shot', sub: 'Approach & flirt, smoothly', tint: 'sage', send: 'Help me flirt — what do I text back?' },
-  { id: 'raise', emoji: '💰', title: 'Get the Raise', sub: 'Scripts that move numbers', tint: 'butter', send: 'I want to negotiate my salary tomorrow.' },
-  { id: 'speak', emoji: '🎤', title: 'Speak Up', sub: 'Own the room, kindly', tint: 'coral', send: 'I never speak up in meetings. Fix me.' },
-  { id: 'ghost', emoji: '👻', title: 'Ghost Protocol', sub: 'Left on read? Handle it', tint: 'sage', send: "I got ghosted. What now?" },
+export function routeFlow(text) {
+  const s = text.toLowerCase()
+  for (const [id, flow] of Object.entries(FLOWS)) {
+    if (id === 'generic') continue
+    if (flow.keywords.some((k) => s.includes(k))) return id
+  }
+  return 'generic'
+}
+
+// ——— skills ———
+export const INITIAL_SKILLS = [
+  { key: 'Conversation', value: 81 },
+  { key: 'Reading people', value: 72 },
+  { key: 'Conflict', value: 64 },
+  { key: 'Dating', value: 63 },
+  { key: 'Assertiveness', value: 51 },
+  { key: 'Boundaries', value: 46 },
 ]
 
-// ——— Growth / Social Fitness ———
-export const SKILLS = [
-  { name: 'Reading the room', value: 72, note: 'sharp' },
-  { name: 'Flirting', value: 63, note: 'warming up' },
-  { name: 'Conflict repair', value: 55, note: 'improving' },
-  { name: 'Boundaries', value: 41, note: 'leg day, huh' },
+// ——— seed situations so the home screen tells the story ———
+export const SEED_SITUATIONS = [
+  {
+    id: 'seed-1',
+    title: "She hasn't replied since yesterday",
+    emoji: '❤️',
+    status: 'open',
+    when: '2h ago',
+    flowId: 'left-on-read',
+    nodeId: 'start',
+    messages: [
+      { from: 'user', blocks: [t("she hasn't replied since yesterday and her last text was just 'k'")] },
+      { from: 'kael', blocks: FLOWS['left-on-read'].nodes.start.blocks },
+    ],
+  },
+  {
+    id: 'seed-2',
+    title: 'Boss interrupted me again',
+    emoji: '💼',
+    status: 'resolved',
+    when: 'yesterday',
+    flowId: 'boss-criticism',
+    nodeId: 'say',
+    messages: [
+      { from: 'user', blocks: [t('my boss interrupted me twice in the standup and talked over my idea')] },
+      {
+        from: 'kael',
+        blocks: [
+          t("noted — and the fact that it's 'again' matters. interruption once is rudeness; as a pattern it's rank-marking."),
+          {
+            type: 'coach',
+            title: 'reclaiming airtime',
+            points: [
+              '"Let me land this thought" — calm, no uptick at the end.',
+              'Finish to the ROOM, not to him. Eye contact with the audience.',
+              'If it persists, name it 1:1: "I notice I get cut off in standups. I need to finish my points."',
+            ],
+          },
+        ],
+      },
+      {
+        from: 'kael',
+        blocks: [
+          {
+            type: 'reflection',
+            insight: 'When interrupted, you stop talking mid-sentence — you yield the floor before anyone actually takes it.',
+            skill: 'Holding the floor',
+            skillKey: 'Assertiveness',
+            xp: 8,
+          },
+        ],
+      },
+    ],
+  },
 ]
 
-export const QUESTS = [
-  { id: 1, text: 'Send the first message', done: 2, total: 3 },
-  { id: 2, text: 'Say no without apologizing', done: 0, total: 1 },
-  { id: 3, text: 'Decode before you spiral', done: 1, total: 2 },
-  { id: 4, text: 'Give one real compliment', done: 3, total: 3 },
-]
+export const NOTICED = {
+  text: 'Three of your recent situations involve avoiding a direct ask — the raise, the second date, the roommate thing.',
+  cta: 'Teach me to ask directly',
+  flowId: 'direct-ask',
+}
