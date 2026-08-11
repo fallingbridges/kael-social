@@ -79,6 +79,7 @@ export default function App() {
       when: 'now',
       flowId,
       nodeId: 'start',
+      tags: flow.tags || [],
       messages: [{ from: 'user', blocks: [{ type: 'text', text }] }],
     }
     setSituations((all) => [sit, ...all])
@@ -146,6 +147,7 @@ export default function App() {
         when: 'now',
         flowId,
         nodeId: 'start',
+        tags: flow.tags || [],
         messages: [{ from: 'user', blocks: [{ type: 'photo', src }, { type: 'text', text: ask }] }],
       },
       ...all,

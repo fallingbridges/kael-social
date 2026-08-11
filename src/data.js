@@ -19,6 +19,7 @@ export const FLOWS = {
   'boss-criticism': {
     title: 'Criticized in front of everyone',
     emoji: '💼',
+    tags: ['work', 'conflict'],
     keywords: ['boss', 'manager', 'criticiz', 'in front of everyone', 'interrupted'],
     observation: "You tend to respond fast when your competence is questioned. Speed is the tell — in a status moment, the strongest move is usually the slowest one.",
     nodes: {
@@ -188,6 +189,7 @@ export const FLOWS = {
   'left-on-read': {
     title: 'She replied "k"',
     emoji: '❤️',
+    tags: ['dating', 'texting'],
     keywords: ['"k"', "'k'", 'left on read', "hasn't replied", 'hasnt replied', 'read my message', 'ghost', 'distant'],
     observation: 'You mistake ambiguity for rejection. The silence started a story in your head — and you almost replied to the story instead of the person.',
     nodes: {
@@ -344,6 +346,7 @@ export const FLOWS = {
   'say-no': {
     title: 'How do I say no?',
     emoji: '🛑',
+    tags: ['boundaries', 'friends'],
     keywords: ['say no', "can't say no", 'cant say no', 'favor', 'babysit', 'turn down', 'tell him no', 'tell her no'],
     observation: 'You pad your no with apologies until it sounds like a maybe — then people push on the maybe, and you fold on the push.',
     nodes: {
@@ -459,6 +462,7 @@ export const FLOWS = {
   'direct-ask': {
     title: 'Asking directly',
     emoji: '🎯',
+    tags: ['assertiveness'],
     keywords: ['ask directly', 'more direct'],
     observation: 'Hinting protects you from a "no" by making sure there was never really a question. Direct asks risk the no — and get the yes.',
     nodes: {
@@ -972,6 +976,7 @@ export const FLOWS = {
   'drill-snap': {
     title: 'The Snap',
     emoji: '🧯',
+    tags: ['life'],
     keywords: [],
     observation: null,
     nodes: {
@@ -1015,6 +1020,7 @@ export const FLOWS = {
   'photo-caption': {
     title: 'Caption this photo',
     emoji: '📸',
+    tags: ['photo', 'texting'],
     keywords: ['caption'],
     observation: null,
     nodes: {
@@ -1052,6 +1058,7 @@ export const FLOWS = {
   'photo-decode': {
     title: 'Decode this screenshot',
     emoji: '🔍',
+    tags: ['decode', 'texting'],
     keywords: [],
     observation: 'You screenshot instead of spiraling now — outsourcing the 3am read to daylight hours is growth.',
     nodes: {
@@ -1151,6 +1158,7 @@ export const SEED_SITUATIONS = [
     id: 'seed-1',
     title: "She hasn't replied since yesterday",
     emoji: '❤️',
+    tags: ['dating', 'texting'],
     when: 'yesterday',
     flowId: 'left-on-read',
     nodeId: 'start',
@@ -1170,6 +1178,7 @@ export const SEED_SITUATIONS = [
     id: 'seed-2',
     title: 'Boss interrupted me again',
     emoji: '💼',
+    tags: ['work', 'conflict'],
     when: '3 days ago',
     flowId: 'boss-criticism',
     nodeId: 'say',
@@ -1208,6 +1217,7 @@ export const SEED_SITUATIONS = [
     id: 'seed-3',
     title: 'Dinner with her parents',
     emoji: '👥',
+    tags: ['family', 'dating'],
     when: 'last week',
     flowId: 'generic',
     nodeId: 'say',
