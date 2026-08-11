@@ -1,79 +1,27 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Fox from './Fox.jsx'
+import RepPlayer from './RepPlayer.jsx'
+import { CONTEXT_SETS, REP_BY_ID, noticedLine } from '../rep-data.js'
 import {
   ANALYZE_LINES,
+  CONTEXT_LABELS,
+  COST_LINES,
   INTERVIEW,
-  PROGRAMS,
+  PATTERNS,
   SKILL_KEYS,
-  STAKES_LINES,
-  computeBaseline,
 } from '../onboarding-data.js'
 
-/* ——— small radar for the reveal ——— */
-function Radar({ scores }) {
-  const cx = 110, cy = 92, R = 62
-  const n = SKILL_KEYS.length
-  const pt = (i, r) => {
-    const a = ((-90 + (i * 360) / n) * Math.PI) / 180
-    return [cx + r * Math.cos(a), cy + r * Math.sin(a)]
-  }
-  const ring = (f) => SKILL_KEYS.map((_, i) => pt(i, R * f).join(',')).join(' ')
-  const shape = SKILL_KEYS.map((k, i) => pt(i, (R * scores[k]) / 100).join(',')).join(' ')
-  const LABELS = { 'Reading people': 'READING', Expression: 'EXPRESSION', Assertiveness: 'ASSERT', Conflict: 'CONFLICT', Connection: 'CONNECT' }
-  return (
-    <svg viewBox="0 0 220 190" className="ob-radar">
-      {[1, 0.66, 0.33].map((f) => <polygon key={f} points={ring(f)} className="radar-ring" />)}
-      {SKILL_KEYS.map((_, i) => {
-        const [x, y] = pt(i, R)
-        return <line key={i} x1={cx} y1={cy} x2={x} y2={y} className="radar-axis" />
-      })}
-      <polygon points={shape} className="radar-shape" />
-      {SKILL_KEYS.map((k, i) => {
-        const [x, y] = pt(i, (R * scores[k]) / 100)
-        return <circle key={k} cx={x} cy={y} r="3.5" className="radar-dot" />
-      })}
-      {SKILL_KEYS.map((k, i) => {
-        const [x, y] = pt(i, R + 20)
-        return <text key={k} x={x} y={y + 3.5} textAnchor="middle" className="radar-label">{LABELS[k]}</text>
-      })}
-    </svg>
-  )
-}
+const strip = (label) => label.replace(/^[^\w"']+\s*/, '') // drop leading emoji for quotes
 
-/* ——— projected growth curve ——— */
-function Projection({ from, to }) {
-  const W = 300, H = 90
-  const pts = Array.from({ length: 9 }, (_, i) => {
-    const t = i / 8
-    const v = from + (to - from) * (1 - Math.pow(1 - t, 2))
-    return [8 + t * (W - 16), H - 14 - ((v - 10) / 80) * (H - 30)]
-  })
-  const line = pts.map(([x, y], i) => `${i === 0 ? 'M' : 'L'}${x.toFixed(1)} ${y.toFixed(1)}`).join(' ')
-  const area = `${line} L${pts[8][0]} ${H} L${pts[0][0]} ${H} Z`
-  return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="ob-proj">
-      <defs>
-        <linearGradient id="pfill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#00c2a8" stopOpacity="0.4" />
-          <stop offset="100%" stopColor="#00c2a8" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <path d={area} fill="url(#pfill)" />
-      <path d={line} fill="none" stroke="var(--teal)" strokeWidth="3" strokeLinecap="round" className="growth-line" />
-      <circle cx={pts[0][0]} cy={pts[0][1]} r="4.5" fill="var(--ink)" />
-      <circle cx={pts[8][0]} cy={pts[8][1]} r="5" fill="var(--gold)" stroke="var(--ink)" strokeWidth="1.5" />
-      <text x={pts[0][0] + 4} y={pts[0][1] - 10} className="proj-tag">you now · {from}</text>
-      <text x={pts[8][0] - 4} y={pts[8][1] - 10} textAnchor="end" className="proj-tag strong">week 8 · {to}</text>
-    </svg>
-  )
-}
-
-/* ——— main flow ——— */
 export default function OnboardingFlow({ onDone }) {
-  const [phase, setPhase] = useState('welcome') // welcome | chat | analyzing | reveal | plan | paywall
+  const [phase, setPhase] = useState('welcome') // welcome | chat | analyzing | plan | workout | earned | paywall
   const [name, setName] = useState('')
-  const [tags, setTags] = useState({})
-  const [result, setResult] = useState(null)
+  const [tags, setTags] = useState({}) // stepId -> tag
+  const [quotes, setQuotes] = useState({}) // stepId -> chosen label text
+  const [workout, setWorkout] = useState(null) // {xp, tally}
+
+  const pattern = PATTERNS[tags.pattern] || PATTERNS.fold
+  const repSet = (CONTEXT_SETS[tags.context] || CONTEXT_SETS.friends).map((id) => REP_BY_ID[id])
 
   return (
     <div className="ob">
@@ -82,21 +30,37 @@ export default function OnboardingFlow({ onDone }) {
         <Interview
           name={name}
           setName={setName}
-          onDone={(answers, tagMap) => {
+          onDone={(tagMap, quoteMap) => {
             setTags(tagMap)
-            setResult(computeBaseline(answers))
+            setQuotes(quoteMap)
             setPhase('analyzing')
           }}
         />
       )}
-      {phase === 'analyzing' && <Analyzing onDone={() => setPhase('reveal')} />}
-      {phase === 'reveal' && <Reveal name={name} result={result} onNext={() => setPhase('plan')} />}
-      {phase === 'plan' && <Plan result={result} onNext={() => setPhase('paywall')} />}
-      {phase === 'paywall' && <Paywall name={name} result={result} tags={tags} onDone={onDone} />}
+      {phase === 'analyzing' && <Analyzing onDone={() => setPhase('plan')} />}
+      {phase === 'plan' && (
+        <Plan name={name} pattern={pattern} tags={tags} quotes={quotes} onNext={() => setPhase('workout')} />
+      )}
+      {phase === 'workout' && (
+        <div className="ob-workout">
+          <RepPlayer
+            reps={repSet}
+            skillName={pattern.program.skillName}
+            skillEmoji={pattern.program.emoji}
+            onDone={(res) => {
+              setWorkout(res)
+              setPhase('earned')
+            }}
+          />
+        </div>
+      )}
+      {phase === 'earned' && <Earned name={name} pattern={pattern} workout={workout} onNext={() => setPhase('paywall')} />}
+      {phase === 'paywall' && <Paywall name={name} pattern={pattern} tags={tags} quotes={quotes} workout={workout} onDone={onDone} />}
     </div>
   )
 }
 
+/* ================= Welcome ================= */
 function Welcome({ onNext, onSkip }) {
   return (
     <div className="ob-page ob-center">
@@ -107,23 +71,24 @@ function Welcome({ onNext, onSkip }) {
       </div>
       <h1 className="ob-logo">kael</h1>
       <p className="ob-tag">the gym for your social skills</p>
-      <p className="ob-sub">charisma isn't a gift. it's reps.</p>
+      <p className="ob-sub">train the moments, not the theory.</p>
       <div className="ob-bottom">
-        <button className="btn btn-coral btn-block" onClick={onNext}>let's find my level</button>
+        <button className="btn btn-coral btn-block" onClick={onNext}>start my intake</button>
         <button className="ob-skip" onClick={onSkip}>skip for now</button>
       </div>
     </div>
   )
 }
 
+/* ================= Interview ================= */
 function Interview({ name, setName, onDone }) {
   const [messages, setMessages] = useState([])
   const [stepIdx, setStepIdx] = useState(0)
   const [typing, setTyping] = useState(false)
   const [ready, setReady] = useState(false)
-  const [answers, setAnswers] = useState([])
   const [draft, setDraft] = useState('')
   const tagsRef = useRef({})
+  const quotesRef = useRef({})
   const scrollRef = useRef(null)
   const timers = useRef([])
   const step = INTERVIEW[stepIdx]
@@ -150,17 +115,16 @@ function Interview({ name, setName, onDone }) {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
   }, [messages, typing, ready])
 
-  function advance(nextAnswers) {
+  function advance() {
     if (stepIdx + 1 < INTERVIEW.length) setStepIdx(stepIdx + 1)
-    else setTimeout(() => onDone(nextAnswers, tagsRef.current), 450)
+    else setTimeout(() => onDone(tagsRef.current, quotesRef.current), 450)
   }
 
   function pick(opt) {
-    if (opt.tag) tagsRef.current[step.id] = opt.tag
+    tagsRef.current[step.id] = opt.tag
+    quotesRef.current[step.id] = strip(opt.label)
     setMessages((m) => [...m, { who: 'me', text: opt.label }])
-    const next = [...answers, opt]
-    setAnswers(next)
-    advance(next)
+    advance()
   }
 
   function submitName() {
@@ -168,10 +132,10 @@ function Interview({ name, setName, onDone }) {
     setName(n)
     setMessages((m) => [...m, { who: 'me', text: n }])
     setDraft('')
-    advance(answers)
+    advance()
   }
 
-  const progress = Math.max(0.05, stepIdx / INTERVIEW.length)
+  const progress = Math.max(0.06, stepIdx / INTERVIEW.length)
 
   return (
     <div className="ob-page">
@@ -194,7 +158,6 @@ function Interview({ name, setName, onDone }) {
             </div>
           </div>
         )}
-        {/* options load inline, below the conversation */}
         {ready && !step.input && (
           <div className="ob-opts">
             {step.caption && <p className="ob-caption">{step.caption}</p>}
@@ -222,12 +185,13 @@ function Interview({ name, setName, onDone }) {
   )
 }
 
+/* ================= Analyzing ================= */
 function Analyzing({ onDone }) {
   const [line, setLine] = useState(0)
   useEffect(() => {
-    const t1 = setTimeout(() => setLine(1), 950)
-    const t2 = setTimeout(() => setLine(2), 1900)
-    const t3 = setTimeout(onDone, 2900)
+    const t1 = setTimeout(() => setLine(1), 850)
+    const t2 = setTimeout(() => setLine(2), 1700)
+    const t3 = setTimeout(onDone, 2600)
     return () => [t1, t2, t3].forEach(clearTimeout)
   }, [])
   return (
@@ -243,78 +207,109 @@ function Analyzing({ onDone }) {
   )
 }
 
-function Reveal({ name, result, onNext }) {
-  const art = /^[aeiou]/i.test(result.name.replace('The ', '')) ? 'an' : 'a'
+/* ================= The mirror + the plan ================= */
+function Plan({ name, pattern, tags, quotes, onNext }) {
+  const prog = pattern.program
   return (
     <div className="ob-page ob-scroll">
-      <p className="ob-eyebrow">your social profile</p>
-      <h2 className="ob-h2">{name}, you're {art}…</h2>
-      <div className="ob-arch">{result.name}</div>
-      <Radar scores={result.scores} />
+      <p className="ob-eyebrow">from what you've told me, {name}…</p>
+      <h2 className="ob-h2">you sound like</h2>
+      <div className="ob-arch">{pattern.archetype}</div>
       <div className="ob-card">
-        <p>{result.blurb}</p>
+        <p>{pattern.blurb}</p>
       </div>
-      <div className="ob-duo">
-        <div className="ob-card half teal">
-          <span className="ob-mini">superpower</span>
-          <b>{result.strongest}</b>
-        </div>
-        <div className="ob-card half coral">
-          <span className="ob-mini">we train first</span>
-          <b>{result.weakest}</b>
-        </div>
-      </div>
-      <button className="btn btn-coral btn-block" onClick={onNext}>build my program</button>
-    </div>
-  )
-}
 
-function Plan({ result, onNext }) {
-  const prog = PROGRAMS[result.weakest]
-  const from = result.scores[result.weakest]
-  const to = Math.min(88, from + 33)
-  return (
-    <div className="ob-page ob-scroll">
-      <p className="ob-eyebrow">your program</p>
+      <p className="ob-eyebrow" style={{ marginTop: 10 }}>so here's your program</p>
       <h2 className="ob-h2">
         {prog.emoji} {prog.name}
       </h2>
-      <p className="ob-sub2">3 reps a day · {prog.focus}</p>
       <div className="ob-card">
-        <span className="ob-mini">projected — {result.weakest}</span>
-        <Projection from={from} to={to} />
-      </div>
-      <div className="ob-promise">
-        <div className="ob-card half">
-          <span className="ob-mini">in the moment</span>
-          <p className="small">bring any real situation — decode it, defuse it, find the words</p>
+        <div className="ob-trace">
+          <p>
+            <b>starts with:</b> {prog.focus} — because you said <em>“{quotes.pattern}”</em>
+          </p>
+          <p>
+            <b>set in:</b> {CONTEXT_LABELS[tags.context]} — where you said it stings
+          </p>
+          <p>
+            <b>goal on file:</b> <em>“{quotes.aspiration}”</em>
+          </p>
         </div>
-        <div className="ob-card half">
-          <span className="ob-mini">over time</span>
-          <p className="small">daily reps with rising difficulty until it's automatic</p>
-        </div>
       </div>
-      <button className="btn btn-coral btn-block" onClick={onNext}>I want this</button>
+
+      <div className="ob-card">
+        <span className="ob-mini">your skill levels</span>
+        {SKILL_KEYS.map((k) => (
+          <div className="plan-skill" key={k}>
+            <span>{k}</span>
+            <div className="plan-skill-bar" />
+            <em>not measured yet</em>
+          </div>
+        ))}
+        <p className="plan-skill-note">kael maps your real levels by watching you train — not by quizzing you.</p>
+      </div>
+
+      <button className="btn btn-coral btn-block" onClick={onNext}>
+        start my first workout — 3 reps, 90 seconds
+      </button>
     </div>
   )
 }
 
-function Paywall({ name, result, tags, onDone }) {
+/* ================= Earned ================= */
+function Earned({ name, pattern, workout, onNext }) {
+  const total = Object.values(workout?.tally || {}).reduce((a, b) => a + b, 0)
+  return (
+    <div className="ob-page ob-scroll ob-earned">
+      <div className="ob-pay-fox">
+        <Fox pose="cheer" size={104} />
+      </div>
+      <h2 className="ob-h2 center">day 1 — done, {name}.</h2>
+      <p className="ob-sub2">that wasn't a demo. your training has started.</p>
+      <div className="earned-chips">
+        <span className="earned-chip">🔥 day 1 streak lit</span>
+        <span className="earned-chip">⚡ {workout?.xp || 0} XP banked</span>
+        <span className="earned-chip">🏋️ {total} reps</span>
+      </div>
+      <div className="ob-card">
+        <span className="ob-mini">{pattern.program.emoji} {pattern.program.skillName} · Lv 1</span>
+        <b>{pattern.tier}</b>
+        <p className="small" style={{ marginTop: 3 }}>everyone starts here. nobody stays here.</p>
+      </div>
+      <div className="ob-card">
+        <span className="ob-mini">✦ early read — one session in</span>
+        <p className="small">{noticedLine(workout?.tally || {})}</p>
+      </div>
+      <button className="btn btn-coral btn-block" onClick={onNext}>
+        keep my program going
+      </button>
+    </div>
+  )
+}
+
+/* ================= Paywall ================= */
+function Paywall({ name, pattern, tags, quotes, workout, onDone }) {
   const [plan, setPlan] = useState('annual')
-  const stake = STAKES_LINES[tags.stakes] || 'get good with people'
+  const stake = COST_LINES[tags.cost] || 'get good with people'
   return (
     <div className="ob-page ob-scroll">
-      <div className="ob-pay-fox">
-        <Fox pose="cheer" size={92} />
+      <div className="earned-chips" style={{ justifyContent: 'center' }}>
+        <span className="earned-chip">day 1 ✓</span>
+        <span className="earned-chip">⚡ {workout?.xp || 0} XP</span>
+        <span className="earned-chip">🔥 streak lit</span>
       </div>
       <h2 className="ob-h2 center">
-        {result.name.toLowerCase()}'s plan to {stake}
+        {pattern.archetype.toLowerCase()}'s plan to {stake}
       </h2>
+      <div className="ob-card tmrw">
+        <span className="ob-mini">📅 tomorrow's set — ready and waiting</span>
+        <p className="small"><b>{pattern.tomorrow}</b> · 3 reps · set in {CONTEXT_LABELS[tags.context]}</p>
+      </div>
       <div className="ob-checks">
-        <p>✅ unlimited reps across all 5 skills</p>
-        <p>✅ NPC roleplays that push back like real people</p>
-        <p>✅ your coach on call — bring any real situation</p>
-        <p>✅ weakness detection & a program that adapts</p>
+        <p>✅ your program: {pattern.program.emoji} {pattern.program.name}, adapting as you train</p>
+        <p>✅ unlimited reps, difficulty that climbs with you</p>
+        <p>✅ roleplays that push back like real people</p>
+        <p>✅ your real skill levels, measured from play</p>
       </div>
       <button className={'ob-plan' + (plan === 'annual' ? ' on' : '')} onClick={() => setPlan('annual')}>
         <div>

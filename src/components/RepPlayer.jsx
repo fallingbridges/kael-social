@@ -5,7 +5,7 @@ import { INTERSTITIAL, REPS, SKILL, XP, gradeTyped, noticedLine } from '../rep-d
 const FOX_POSE = { strong: 'cheer', almost: 'happy', fold: 'sad', harsh: 'think' }
 const SHEET_TONE = { strong: 'strong', almost: 'warn', fold: 'warn', harsh: 'warn' }
 
-export default function RepPlayer() {
+export default function RepPlayer({ reps = REPS, skillName = SKILL.name, skillEmoji = SKILL.emoji, onDone }) {
   const [repIdx, setRepIdx] = useState(0)
   const [bubbles, setBubbles] = useState([]) // {who:'npc'|'me', text}
   const [options, setOptions] = useState(null)
@@ -25,7 +25,7 @@ export default function RepPlayer() {
   const scrollRef = useRef(null)
   const timers = useRef([])
 
-  const rep = REPS[repIdx]
+  const rep = reps[repIdx]
 
   // load a rep
   useEffect(() => {
@@ -117,7 +117,8 @@ export default function RepPlayer() {
   }
 
   function advance() {
-    if (repIdx + 1 < REPS.length) setRepIdx(repIdx + 1)
+    if (repIdx + 1 < reps.length) setRepIdx(repIdx + 1)
+    else if (onDone) onDone({ xp, tally })
     else setPhase('summary')
   }
 
@@ -168,8 +169,8 @@ export default function RepPlayer() {
             timers.current.push(
               setTimeout(() => {
                 setNpcTyping(false)
-                setBubbles([{ who: 'npc', text: REPS[0].line }])
-                timers.current.push(setTimeout(() => setOptions(REPS[0].options), 350))
+                setBubbles([{ who: 'npc', text: reps[0].line }])
+                timers.current.push(setTimeout(() => setOptions(reps[0].options), 350))
               }, 750),
             )
           }}
@@ -185,10 +186,10 @@ export default function RepPlayer() {
       {/* HUD */}
       <div className="rep-hud">
         <span className="rep-skill">
-          {SKILL.emoji} {SKILL.name} · <b>Lv {rep.level}</b>
+          {skillEmoji} {skillName} · <b>Lv {rep.level}</b>
         </span>
         <div className="rep-progress">
-          <div className="rep-progress-fill" style={{ width: `${(repIdx / REPS.length) * 100}%` }} />
+          <div className="rep-progress-fill" style={{ width: `${(repIdx / reps.length) * 100}%` }} />
         </div>
         <span className="rep-xp">
           ⚡ {xp}
@@ -251,7 +252,7 @@ export default function RepPlayer() {
               <Fox pose={FOX_POSE[sheet.quality]} size={54} />
               <div>
                 <h3>{sheet.verdict}</h3>
-                <span className="rep-sheet-xp">{SKILL.name} +{sheet.xp} XP</span>
+                <span className="rep-sheet-xp">{skillName} +{sheet.xp} XP</span>
               </div>
             </div>
             <p className="rep-sheet-why">{sheet.why}</p>

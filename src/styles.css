@@ -1711,6 +1711,40 @@ input { font-family: inherit; }
 .proj-tag { font-size: 10px; font-weight: 800; fill: var(--ink-faint); font-family: var(--body); }
 .proj-tag.strong { fill: var(--teal-deep); }
 
+/* plan: traceability + unmapped skills */
+.ob-trace p { font-size: 13.5px; font-weight: 700; line-height: 1.5; margin-bottom: 8px; }
+.ob-trace p:last-child { margin-bottom: 0; }
+.ob-trace b { color: var(--coral-deep); }
+.ob-trace em { font-style: italic; color: var(--ink-soft); }
+.plan-skill { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.plan-skill span { font-size: 12.5px; font-weight: 800; width: 108px; flex-shrink: 0; }
+.plan-skill-bar {
+  flex: 1;
+  height: 10px;
+  border-radius: 999px;
+  border: 2px dashed var(--line-strong);
+  background: transparent;
+}
+.plan-skill em { font-size: 10px; font-weight: 800; color: var(--ink-faint); font-style: normal; text-transform: uppercase; letter-spacing: 0.04em; flex-shrink: 0; }
+.plan-skill-note { font-size: 11.5px; font-weight: 700; color: var(--ink-faint); margin-top: 9px; font-style: italic; }
+
+/* workout embed + earned */
+.ob-workout { flex: 1; min-height: 0; position: relative; }
+.ob-earned { text-align: center; }
+.ob-earned .ob-card { text-align: left; }
+.earned-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 12px 0 14px; }
+.earned-chip {
+  font-size: 12px;
+  font-weight: 800;
+  background: var(--card);
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  padding: 7px 13px;
+  box-shadow: var(--shadow-card);
+  animation: msg-in 0.4s both;
+}
+.ob-card.tmrw { border-color: var(--gold); background: var(--gold-soft); }
+
 /* paywall */
 .ob-pay-fox { display: flex; justify-content: center; }
 .ob-checks { margin: 10px 0 14px; display: flex; flex-direction: column; gap: 7px; }

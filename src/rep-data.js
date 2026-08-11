@@ -153,6 +153,73 @@ export const REPS = [
   },
 ]
 
+// ——— extra reps for onboarding workouts (dating + family sets) ———
+export const EXTRA_REPS = [
+  {
+    id: 'raincheck',
+    level: 1,
+    context: "7:20 PM. The date is at 8. You're already dressed.",
+    npc: { name: 'Jordan', role: 'your date', emoji: '🥂', color: 'var(--coral)' },
+    line: "sooo sorry — can we rain check tonight? 🥺 something came up, I promise I'll make it up to you",
+    options: [
+      { text: "no worries at all!! literally whatever works, I'm free like… always", quality: 'fold', verdict: 'The infinite-availability signal', why: 'Your evening just got priced at zero — and people subconsciously invest in what looks scarce, not what looks free.', better: "bummed! I was looking forward to it. this week's packed now — let's find something next week." },
+      { text: "bummed! I was looking forward to it. this week's packed now — let's find something next week.", quality: 'strong', verdict: 'Warm, honest, and your time has a price', why: 'You showed real disappointment without punishing them, and your calendar quietly became something to respect. Attractive AND honest.' },
+      { text: 'wow. ok. classic.', quality: 'harsh', verdict: 'Punishment round one', why: "Maybe something did come up. You just spent goodwill on a story you haven't verified — and 'classic' will be remembered longer than the cancel.", better: "bummed! I was looking forward to it. this week's packed now — let's find something next week." },
+      { text: '(leave it on read for a few hours, make a point)', quality: 'almost', verdict: 'The silent scoreboard', why: "They can't read a lesson in silence — they'll just read moodiness. If the cancel bothered you, the move is saying so once, warmly.", better: "bummed! I was looking forward to it. this week's packed now — let's find something next week." },
+    ],
+  },
+  {
+    id: 'pace',
+    level: 2,
+    context: '11:40 PM. Third date, and it was great. You want to take this one slow.',
+    npc: { name: 'Casey', role: 'your date', emoji: '🌙', color: 'var(--butter)' },
+    line: "come overrr 😌 the night doesn't have to end yet",
+    options: [
+      { text: 'haha ok give me 20 min', quality: 'fold', verdict: 'The autopilot yes', why: "Nothing wrong with yes — IF you chose it. This one was momentum, not choice. Boundaries you never voice can't be respected.", better: "tempting 😄 but I'm calling it — tonight was really good. next one's on me." },
+      { text: "tempting 😄 but I'm calling it — tonight was really good. next one's on me.", quality: 'strong', verdict: 'A no that loses zero warmth', why: 'You declined the invitation, kept the affection, and set the pace without a single apology. This is what secure looks like in one text.' },
+      { text: "it's late and I have work stuff and honestly my roommate situation is—", quality: 'almost', verdict: 'Death by three excuses', why: 'Each excuse invites a workaround ("come after your meeting!"). One warm no beats three negotiable reasons.', better: "tempting 😄 but I'm calling it — tonight was really good. next one's on me." },
+      { text: 'why are you rushing this?', quality: 'harsh', verdict: 'A preference dressed as an accusation', why: 'You had a boundary; you delivered a verdict. "I want to take this slow" is attractive. "You\'re rushing" starts a trial.', better: "tempting 😄 but I'm calling it — tonight was really good. next one's on me." },
+    ],
+  },
+  {
+    id: 'sundaycall',
+    level: 1,
+    context: "Sunday, 4 PM. You didn't call last week.",
+    npc: { name: 'Mom', role: 'your mother', emoji: '🏠', color: 'var(--butter)' },
+    line: "you never call anymore. I guess you're just too busy for your mother now.",
+    options: [
+      { text: 'mom, I literally called two weeks ago', quality: 'almost', verdict: 'Winning the ledger, losing the point', why: '"You never call" was a feeling wearing a statistic. Correcting the number leaves the actual message — "I miss you" — unanswered.', better: "I miss you too. sundays got chaotic — let's do a standing call, wednesday evenings. locked?" },
+      { text: "I miss you too. sundays got chaotic — let's do a standing call, wednesday evenings. locked?", quality: 'strong', verdict: 'Heard the feeling, gave it structure', why: 'You translated the guilt-jab into what it actually was, answered THAT, and offered something real instead of an apology. Elite family judo.' },
+      { text: 'here we go again 🙄', quality: 'harsh', verdict: 'Confirmed her whole script', why: "Now she's right about you in her head — and the next call will open with this one. Eye-rolls are expensive in long relationships.", better: "I miss you too. sundays got chaotic — let's do a standing call, wednesday evenings. locked?" },
+      { text: "you're right, I'm the worst, I'm sorry", quality: 'fold', verdict: 'Guilt accepted at face value', why: "Self-flagellation isn't connection — she didn't want you to feel bad, she wanted to feel wanted. You gave her neither.", better: "I miss you too. sundays got chaotic — let's do a standing call, wednesday evenings. locked?" },
+    ],
+  },
+  {
+    id: 'sibling',
+    level: 2,
+    context: 'He still owes you $350 from "till next month" — in March.',
+    npc: { name: 'Dev', role: 'your brother', emoji: '👟', color: 'var(--sage)' },
+    line: "bro can you spot me $200 till next month? you KNOW I'm good for it 😂",
+    options: [
+      { text: 'yeah fine. venmo or cash?', quality: 'fold', verdict: 'The Bank of You never closes', why: "That's $550 now, and the interest rate is your resentment. Family loans without boundaries aren't generosity — they're a subscription he manages.", better: "can't do it — march is still open. clear that and we'll talk." },
+      { text: "can't do it — march is still open. clear that and we'll talk.", quality: 'strong', verdict: 'The ledger said no, warmly', why: 'Short, factual, zero drama. You made the old debt the reason — which it is — instead of making it about his character.' },
+      { text: 'do I look like an ATM to you?', quality: 'harsh', verdict: 'True feelings, expensive packaging', why: "The frustration is earned — but now the conversation is about your tone at Thanksgiving, not his $350. Don't hand him the exit.", better: "can't do it — march is still open. clear that and we'll talk." },
+      { text: "I would but I'm kinda tight right now too…", quality: 'almost', verdict: 'A fake reason is a weak reason', why: '"I\'m tight too" invites "it\'s just till friday!!" The REAL reason — the unpaid $350 — was right there, and it\'s unanswerable.', better: "can't do it — march is still open. clear that and we'll talk." },
+    ],
+  },
+]
+
+const ALL_REPS = [...REPS, ...EXTRA_REPS]
+export const REP_BY_ID = Object.fromEntries(ALL_REPS.map((r) => [r.id, r]))
+
+// context → the 3-rep first workout served in onboarding
+export const CONTEXT_SETS = {
+  work: ['slides', 'stretch', 'shift'],
+  dating: ['raincheck', 'pace', 'partner'],
+  friends: ['punchline', 'airport', 'venmo'],
+  family: ['sundaycall', 'sibling', 'mother'],
+}
+
 export const XP = { strong: 8, almost: 5, harsh: 3, fold: 2 }
 
 // heuristic grader for the typed rep — demo-grade, deliberately opinionated
