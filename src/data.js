@@ -1253,29 +1253,34 @@ export const SEED_SITUATIONS = [
   },
 ]
 
-// ——— the You tab: identity, skill journeys, and growth receipts ———
+// ——— the Learn tab: 5 core skills, each with live drills ———
 
-// ——— the Learn tab: a catalogue of trainable social skills ———
-// every skill has a live drill — tap it, practice immediately.
+export const CORE_SKILLS = [
+  { key: 'Reading people', emoji: '🔮', tint: 'coral', tagline: 'See the signal, skip the story' },
+  { key: 'Expression', emoji: '🎙️', tint: 'butter', tagline: 'Say it so it lands' },
+  { key: 'Assertiveness', emoji: '🛑', tint: 'sage', tagline: 'Ask directly. No, cleanly.' },
+  { key: 'Conflict', emoji: '🧯', tint: 'coral', tagline: 'Cool the room, keep the bond' },
+  { key: 'Connection', emoji: '💞', tint: 'butter', tagline: 'Make people feel met' },
+]
 
-export const SKILLS = [
-  { skill: 'Confidence', emoji: '🦁', id: 'drill-walkin', drillName: 'The Walk-In', sub: 'Walk in like you belong', tint: 'coral', reps: 0 },
-  { skill: 'Storytelling', emoji: '🎭', id: 'drill-story', drillName: 'The Rambling Story', sub: 'Make them lean in', tint: 'butter', reps: 1 },
-  { skill: 'Boundaries', emoji: '🛑', id: 'drill-guilt', drillName: 'The Guilt-Tripper', sub: 'Say no, keep the friend', tint: 'sage', reps: 2 },
-  { skill: 'Small talk', emoji: '☕', id: 'drill-deadend', drillName: 'The Dead End', sub: 'Turn nothing into something', tint: 'butter', reps: 0 },
-  { skill: 'Flirting', emoji: '💘', id: 'drill-compliment', drillName: 'The Compliment', sub: 'Charm without cringe', tint: 'coral', reps: 0 },
-  { skill: 'Humor', emoji: '😏', id: 'drill-bomb', drillName: 'The Bomb', sub: 'Bomb-proof your funny', tint: 'sage', reps: 0 },
-  { skill: 'Speaking up', emoji: '🎤', id: 'drill-interrupt', drillName: 'The Interrupter', sub: 'Take your airtime back', tint: 'sage', reps: 1 },
-  { skill: 'Reading people', emoji: '🔮', id: 'drill-signals', drillName: 'The Mixed Signals', sub: 'See signal, skip the story', tint: 'coral', reps: 3 },
-  { skill: 'Listening', emoji: '👂', id: 'drill-vent', drillName: 'The Vent', sub: 'Make people feel heard', tint: 'butter', reps: 0 },
-  { skill: 'Conflict', emoji: '🧯', id: 'drill-snap', drillName: 'The Snap', sub: 'Cool the room, keep the bond', tint: 'coral', reps: 0 },
-  { skill: 'Negotiation', emoji: '💰', id: 'drill-lowball', drillName: 'The Lowball', sub: 'Say the number. Hold it.', tint: 'butter', reps: 0 },
-  { skill: 'Texting', emoji: '📱', id: 'drill-cold', drillName: 'The Cold Text', sub: 'Decode without spiraling', tint: 'sage', reps: 1 },
+export const DRILLS = [
+  { id: 'drill-signals', emoji: '🔮', name: 'The Mixed Signals', sub: 'Cold coworker, warm read', core: 'Reading people', reps: 3 },
+  { id: 'drill-cold', emoji: '🥶', name: 'The Cold Text', sub: "Don't chase the 'k'", core: 'Reading people', reps: 1 },
+  { id: 'drill-story', emoji: '🎭', name: 'The Rambling Story', sub: 'Hook first, always', core: 'Expression', reps: 1 },
+  { id: 'drill-deadend', emoji: '☕', name: 'The Dead End', sub: 'Revive a dying convo', core: 'Expression', reps: 0 },
+  { id: 'drill-bomb', emoji: '😏', name: 'The Bomb', sub: 'Survive a joke that dies', core: 'Expression', reps: 0 },
+  { id: 'drill-guilt', emoji: '🧟', name: 'The Guilt-Tripper', sub: 'Say no. Survive the guilt.', core: 'Assertiveness', reps: 2 },
+  { id: 'drill-interrupt', emoji: '🎤', name: 'The Interrupter', sub: 'Hold the floor, calmly', core: 'Assertiveness', reps: 1 },
+  { id: 'drill-lowball', emoji: '💰', name: 'The Lowball', sub: 'Counter without flinching', core: 'Assertiveness', reps: 0 },
+  { id: 'drill-snap', emoji: '⚡', name: 'The Snap', sub: "Don't take the bait", core: 'Conflict', reps: 0 },
+  { id: 'drill-walkin', emoji: '🦁', name: 'The Walk-In', sub: 'A party of strangers', core: 'Connection', reps: 0 },
+  { id: 'drill-compliment', emoji: '💘', name: 'The Compliment', sub: 'Praise choices, not looks', core: 'Connection', reps: 0 },
+  { id: 'drill-vent', emoji: '👂', name: 'The Vent', sub: 'Witness, not contractor', core: 'Connection', reps: 0 },
 ]
 
 export const RECOMMENDED = {
   drillId: 'drill-guilt',
-  skill: 'Boundaries',
+  core: 'Assertiveness',
   because: 'How do I say no?',
 }
 
@@ -1291,11 +1296,10 @@ export const PROFILE = {
 
 export const SKILL_SCORES = [
   { key: 'Reading people', baseline: 58, now: 72, note: 'your sharpest climb' },
-  { key: 'Conversation', baseline: 70, now: 81, note: 'strong and rising' },
+  { key: 'Expression', baseline: 62, now: 70, note: 'stories landing shorter & harder' },
   { key: 'Conflict', baseline: 52, now: 64, note: 'the standup paid off' },
-  { key: 'Dating', baseline: 55, now: 63, note: 'less spiraling, more reading' },
-  { key: 'Assertiveness', baseline: 44, now: 51, note: 'slow but real' },
-  { key: 'Boundaries', baseline: 38, now: 46, note: 'first clean no logged' },
+  { key: 'Connection', baseline: 60, now: 69, note: 'you asked more than you performed' },
+  { key: 'Assertiveness', baseline: 41, now: 52, note: 'first clean no — boundaries live here' },
 ]
 
 export const YOU_STATS = [
@@ -1304,5 +1308,5 @@ export const YOU_STATS = [
   { num: '8', label: 'drill reps' },
   { num: '6', label: 'hard talks survived' },
   { num: '🔥 3', label: 'day streak' },
-  { num: '6/6', label: 'skills improving' },
+  { num: '5/5', label: 'skills improving' },
 ]

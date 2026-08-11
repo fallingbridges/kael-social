@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { Blob } from './bits.jsx'
-import { HOME_CHIPS, SKILLS } from '../data.js'
+import { CORE_SKILLS, DRILLS, HOME_CHIPS } from '../data.js'
 
 function greeting() {
   const h = new Date().getHours()
@@ -16,7 +16,6 @@ export default function HomeScreen({ situations, onNew, onOpen, onFollowUp, onSe
   const photoKind = useRef('photo-decode')
   const followUps = situations.filter((s) => s.followUp)
   const recent = situations.slice(0, 3)
-  const practice = SKILLS.slice(0, 6)
 
   function submit(e) {
     e.preventDefault()
@@ -115,17 +114,23 @@ export default function HomeScreen({ situations, onNew, onOpen, onFollowUp, onSe
             </button>
           </div>
           <div className="learn-strip">
-            {practice.map((s) => (
-              <button className="mini-sk" key={s.id} onClick={() => onDrill(s)}>
-                <span className={`mini-sk-badge ${s.tint}`}>{s.emoji}</span>
-                <b>{s.skill}</b>
-                <span className="mini-sk-sub">{s.reps > 0 ? `🏋️ ${s.reps} rep${s.reps === 1 ? '' : 's'}` : '2 min drill'}</span>
-              </button>
-            ))}
+            {CORE_SKILLS.map((c) => {
+              const drills = DRILLS.filter((d) => d.core === c.key)
+              const reps = drills.reduce((n, d) => n + d.reps, 0)
+              return (
+                <button className="mini-sk" key={c.key} onClick={() => onDrill(drills[0])}>
+                  <span className={`mini-sk-badge ${c.tint}`}>{c.emoji}</span>
+                  <b>{c.key}</b>
+                  <span className="mini-sk-sub">
+                    {reps > 0 ? `🏋️ ${reps} rep${reps === 1 ? '' : 's'}` : `${drills.length} drills`}
+                  </span>
+                </button>
+              )
+            })}
             <button className="mini-sk more" onClick={onLearn}>
               <span className="mini-sk-badge">✨</span>
-              <b>All skills</b>
-              <span className="mini-sk-sub">{SKILLS.length} to train</span>
+              <b>All drills</b>
+              <span className="mini-sk-sub">{DRILLS.length} to train</span>
             </button>
           </div>
         </div>
