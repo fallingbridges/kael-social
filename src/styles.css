@@ -769,32 +769,88 @@ input { font-family: inherit; }
 .sit-item .sit-info span { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
 .sit-item .status-pill { margin-top: 0; flex-shrink: 0; }
 
-/* ————— "I noticed something" card ————— */
+/* ————— follow-up cards ("Kael's been wondering") ————— */
 
-.noticed {
-  width: 100%;
-  text-align: left;
+.fu-card {
   background: linear-gradient(135deg, #fff0d6, var(--coral-soft));
   border: 1.5px solid var(--butter);
   border-radius: var(--r-lg);
-  padding: 16px;
-  margin-bottom: 6px;
+  padding: 15px 16px;
+  margin-bottom: 10px;
   box-shadow: var(--shadow-card);
-  transition: transform 0.15s;
   animation: msg-in 0.5s 0.1s both;
 }
-.noticed:active { transform: scale(0.97); }
-.noticed-head {
+.fu-q { font-size: 14.5px; line-height: 1.45; font-weight: 600; margin-bottom: 11px; }
+.fu-ctx { display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 4px; }
+.fu-opts { display: flex; gap: 8px; flex-wrap: wrap; }
+.fu-btn {
+  font-size: 13px;
+  font-weight: 700;
+  padding: 9px 15px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  transition: transform 0.15s;
+}
+.fu-btn:active { transform: scale(0.93); }
+.fu-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--coral);
+  flex-shrink: 0;
+  animation: pulse 2s infinite;
+}
+.sit-arrow { color: var(--ink-faint); font-size: 15px; flex-shrink: 0; }
+.sit-when { display: block; font-size: 11.5px; color: var(--ink-faint); font-weight: 500; margin-top: 2px; }
+
+/* ————— You tab: Kael's read on you ————— */
+
+.you-card {
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-card);
+  padding: 15px 16px;
+  margin-bottom: 11px;
+  animation: msg-in 0.5s both;
+}
+.you-card.forming { background: transparent; border-style: dashed; box-shadow: none; }
+.you-text { font-size: 14.5px; line-height: 1.5; font-weight: 500; }
+.you-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.you-from {
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--coral-deep);
-  margin-bottom: 7px;
+  color: var(--ink-faint);
 }
-.noticed-spark { color: var(--coral); }
-.noticed p { font-size: 13.5px; line-height: 1.5; font-weight: 500; margin-bottom: 10px; }
-.noticed-cta { font-size: 13.5px; font-weight: 700; color: var(--coral-deep); }
+.you-cta {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--coral-deep);
+  padding: 7px 13px;
+  border-radius: 999px;
+  background: var(--coral-soft);
+  transition: transform 0.15s;
+}
+.you-cta:active { transform: scale(0.93); }
+.you-privacy {
+  text-align: center;
+  font-size: 12px;
+  color: var(--ink-faint);
+  font-weight: 500;
+  margin: 16px 0 8px;
+}
+
+.wrap-chip { border-color: var(--sage); color: #35622f; background: var(--sage-soft); }
 
 /* ————— Tab bar ————— */
 

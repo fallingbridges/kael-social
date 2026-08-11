@@ -1,7 +1,7 @@
-// ——— Kael's brain v2: situation flows ———
-// A situation walks a flow graph: each node = Kael blocks + chips.
-// chip.next → node id, or 'resolve' → reflection card + XP.
-// node.onFree → node to advance to on free-typed text (when Kael asked an open question).
+// ——— Kael's brain v3: companion model ———
+// Situations walk a flow graph. No scores, no statuses — situations get
+// wrapped up with an observation (what Kael learned about you), and Kael
+// follows up later. followUp lives on a situation until answered.
 
 const t = (text) => ({ type: 'text', text })
 
@@ -19,12 +19,7 @@ export const FLOWS = {
     title: 'Criticized in front of everyone',
     emoji: '💼',
     keywords: ['boss', 'manager', 'criticiz', 'in front of everyone', 'interrupted'],
-    reflection: {
-      insight: "You tend to respond fast when your competence is questioned. Speed is the tell — in a status moment, the strongest move is usually the slowest one.",
-      skill: 'Handling public criticism',
-      skillKey: 'Conflict',
-      xp: 8,
-    },
+    observation: "You tend to respond fast when your competence is questioned. Speed is the tell — in a status moment, the strongest move is usually the slowest one.",
     nodes: {
       start: {
         blocks: [
@@ -142,7 +137,7 @@ export const FLOWS = {
           },
           {
             type: 'flags',
-            red: ['Does it in front of seniors = performing', 'Pattern, not one-off? Then it\'s strategy'],
+            red: ['Does it in front of seniors = performing', "Pattern, not one-off? Then it's strategy"],
             green: ['Critique was about work, not you as a person', "Hasn't blocked your actual growth"],
           },
           t("watch ONE thing next meeting: does he critique others publicly too, or just you? that answer changes everything."),
@@ -193,12 +188,7 @@ export const FLOWS = {
     title: 'She replied "k"',
     emoji: '❤️',
     keywords: ['"k"', "'k'", 'left on read', "hasn't replied", 'hasnt replied', 'read my message', 'ghost', 'distant'],
-    reflection: {
-      insight: 'You mistake ambiguity for rejection. The silence started a story in your head — and you almost replied to the story instead of the person.',
-      skill: 'Sitting with ambiguity',
-      skillKey: 'Reading people',
-      xp: 6,
-    },
+    observation: 'You mistake ambiguity for rejection. The silence started a story in your head — and you almost replied to the story instead of the person.',
     nodes: {
       start: {
         blocks: [
@@ -308,9 +298,39 @@ export const FLOWS = {
             type: 'coach',
             title: 'the protocol',
             points: [
-              'Mute, don\'t block (blocking is still a message).',
-              "Every urge to decode them, redirect: text a friend who actually replies.",
+              "Mute, don't block (blocking is still a message).",
+              'Every urge to decode them, redirect: text a friend who actually replies.',
               'The 90% rule: you already know. The decoding is just delay.',
+            ],
+          },
+        ],
+        chips: [],
+      },
+      // ——— follow-up branches (Kael checks in from the home screen) ———
+      'fu-replied': {
+        blocks: [
+          t("SEE. the fan-fiction your brain wrote was worse than the reality — it usually is 😌"),
+          t("what did she say? bring it here, let's read the temperature together."),
+        ],
+        chips: [],
+      },
+      'fu-nothing': {
+        blocks: [
+          t("ok. two days of silence IS information — not about your worth, about her bandwidth or her interest."),
+          {
+            type: 'coach',
+            title: 'where this goes now',
+            points: [
+              'One graceful check-in is allowed. Past that, you\'re donating your dignity.',
+              "Send it once, then go be unreachable and thriving.",
+              'If nothing comes back in a few days — that was the answer. Believe it.',
+            ],
+          },
+          {
+            type: 'says',
+            options: [
+              { tone: 'Graceful', text: "no stress if life got loud — door's open this week if you want to grab that drink" },
+              { tone: 'Closure', text: "taking the silence as an answer — no hard feelings. good luck out there ✌️" },
             ],
           },
         ],
@@ -323,13 +343,8 @@ export const FLOWS = {
   'say-no': {
     title: 'How do I say no?',
     emoji: '🛑',
-    keywords: ["say no", "can't say no", 'cant say no', 'favor', 'babysit', 'turn down', 'tell him no', 'tell her no'],
-    reflection: {
-      insight: 'You pad your no with apologies until it sounds like a maybe — then people push on the maybe, and you fold on the push.',
-      skill: 'Clean boundaries',
-      skillKey: 'Boundaries',
-      xp: 7,
-    },
+    keywords: ['say no', "can't say no", 'cant say no', 'favor', 'babysit', 'turn down', 'tell him no', 'tell her no'],
+    observation: 'You pad your no with apologies until it sounds like a maybe — then people push on the maybe, and you fold on the push.',
     nodes: {
       start: {
         blocks: [
@@ -369,7 +384,7 @@ export const FLOWS = {
             title: 'the broken record',
             points: [
               'Same sentence, same warm tone, every push: "I get it — still can\'t this time."',
-              "Each new excuse you offer is a new handle for them to grab.",
+              'Each new excuse you offer is a new handle for them to grab.',
               'Silence after your no is not an invitation to fill it.',
             ],
           },
@@ -397,7 +412,7 @@ export const FLOWS = {
             title: 'why the first no matters',
             points: [
               "Every yes you didn't mean taught them your time is free.",
-              "The first no re-prices it. Expect one confused blink, not a rupture.",
+              'The first no re-prices it. Expect one confused blink, not a rupture.',
               "People who only like you when you're useful were never the audience for your boundaries anyway.",
             ],
           },
@@ -439,28 +454,23 @@ export const FLOWS = {
     },
   },
 
-  // ————— taught lesson from Growth: direct asks —————
+  // ————— working on directness (opened from the You tab) —————
   'direct-ask': {
     title: 'Asking directly',
     emoji: '🎯',
-    keywords: ['teach me to ask directly'],
-    reflection: {
-      insight: 'Hinting protects you from a "no" by making sure there was never really a question. Direct asks risk the no — and get the yes.',
-      skill: 'Direct asks',
-      skillKey: 'Assertiveness',
-      xp: 5,
-    },
+    keywords: ['ask directly', 'more direct'],
+    observation: 'Hinting protects you from a "no" by making sure there was never really a question. Direct asks risk the no — and get the yes.',
     nodes: {
       start: {
         blocks: [
-          t("ok — the direct ask, the skill you've been orbiting in three separate situations 👀"),
+          t("ok — the direct ask. the thing you've been orbiting in three separate situations 👀"),
           {
             type: 'coach',
             title: 'the anatomy of a direct ask',
             points: [
               'Name the want: "I\'d like…" — not "would it maybe be possible…"',
               'One sentence. The longer the ask, the weaker it sounds.',
-              "Silence after asking. Whoever fills it first is negotiating with themselves.",
+              'Silence after asking. Whoever fills it first is negotiating with themselves.',
               'A "no" to a direct ask stings less than a lifetime of unheard hints. That\'s the trade.',
             ],
           },
@@ -472,6 +482,7 @@ export const FLOWS = {
               { tone: 'Friends', text: 'Can you actually be on time Saturday? It matters to me.' },
             ],
           },
+          t("next time a real ask comes up — bring it here before you send the hint version. we'll sharpen it live."),
         ],
         chips: [],
       },
@@ -483,12 +494,7 @@ export const FLOWS = {
     title: null,
     emoji: '💬',
     keywords: [],
-    reflection: {
-      insight: 'You brought the situation here instead of reacting on impulse — that pause between feeling and response is the actual skill.',
-      skill: 'The pause',
-      skillKey: 'Conversation',
-      xp: 4,
-    },
+    observation: 'You brought the situation here instead of reacting on impulse — that pause between feeling and response is the actual skill.',
     nodes: {
       start: {
         blocks: [
@@ -504,8 +510,8 @@ export const FLOWS = {
             type: 'coach',
             title: 'first read',
             points: [
-              'Separate what happened from the story you\'re telling about it. Facts first, verdicts later.',
-              "Ask what they were protecting — embarrassment? status? Most weird behavior is defense, not offense.",
+              "Separate what happened from the story you're telling about it. Facts first, verdicts later.",
+              'Ask what they were protecting — embarrassment? status? Most weird behavior is defense, not offense.',
               'What outcome do you actually want here? Answer that before you respond to anything.',
             ],
           },
@@ -517,7 +523,7 @@ export const FLOWS = {
           {
             type: 'says',
             options: [
-              { tone: 'Curious', text: "Hey — that landed a bit strangely with me. What did you mean by it?" },
+              { tone: 'Curious', text: 'Hey — that landed a bit strangely with me. What did you mean by it?' },
               { tone: 'Honest', text: "I've been chewing on what happened. Can we talk it through properly?" },
               { tone: 'Light', text: 'Ok that was a weird moment. Are we good?' },
             ],
@@ -538,26 +544,22 @@ export function routeFlow(text) {
   return 'generic'
 }
 
-// ——— skills ———
-export const INITIAL_SKILLS = [
-  { key: 'Conversation', value: 81 },
-  { key: 'Reading people', value: 72 },
-  { key: 'Conflict', value: 64 },
-  { key: 'Dating', value: 63 },
-  { key: 'Assertiveness', value: 51 },
-  { key: 'Boundaries', value: 46 },
-]
-
-// ——— seed situations so the home screen tells the story ———
+// ——— seed situations ———
 export const SEED_SITUATIONS = [
   {
     id: 'seed-1',
     title: "She hasn't replied since yesterday",
     emoji: '❤️',
-    status: 'open',
-    when: '2h ago',
+    when: 'yesterday',
     flowId: 'left-on-read',
     nodeId: 'start',
+    followUp: {
+      question: 'Did she ever reply?',
+      options: [
+        { label: 'She did 🎉', next: 'fu-replied' },
+        { label: 'Still nothing', next: 'fu-nothing' },
+      ],
+    },
     messages: [
       { from: 'user', blocks: [t("she hasn't replied since yesterday and her last text was just 'k'")] },
       { from: 'kael', blocks: FLOWS['left-on-read'].nodes.start.blocks },
@@ -567,10 +569,10 @@ export const SEED_SITUATIONS = [
     id: 'seed-2',
     title: 'Boss interrupted me again',
     emoji: '💼',
-    status: 'resolved',
-    when: 'yesterday',
+    when: '3 days ago',
     flowId: 'boss-criticism',
     nodeId: 'say',
+    wrapped: true,
     messages: [
       { from: 'user', blocks: [t('my boss interrupted me twice in the standup and talked over my idea')] },
       {
@@ -588,15 +590,51 @@ export const SEED_SITUATIONS = [
           },
         ],
       },
+      { from: 'user', blocks: [t('that helps, thank you 🙏')] },
+      {
+        from: 'kael',
+        blocks: [
+          t('anytime. one thing before you go —'),
+          {
+            type: 'observe',
+            text: 'When interrupted, you stop talking mid-sentence — you yield the floor before anyone actually takes it.',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'seed-3',
+    title: 'Dinner with her parents',
+    emoji: '👥',
+    when: 'last week',
+    flowId: 'generic',
+    nodeId: 'say',
+    wrapped: true,
+    messages: [
+      { from: 'user', blocks: [t("meeting her parents saturday and I'm terrified of the silence moments")] },
+      {
+        from: 'kael',
+        blocks: [
+          t("classic. everyone's scared of the silence — including her parents. whoever relaxes first wins the whole table."),
+          {
+            type: 'coach',
+            title: 'the dinner kit',
+            points: [
+              'Questions beat performances. "How did you two meet?" runs for ten minutes on its own.',
+              "Compliment the home, not her mom's looks. Safe, warm, classy.",
+              'One silence survived calmly reads as confidence, not awkwardness.',
+            ],
+          },
+        ],
+      },
+      { from: 'user', blocks: [t('that helps, thank you 🙏')] },
       {
         from: 'kael',
         blocks: [
           {
-            type: 'reflection',
-            insight: 'When interrupted, you stop talking mid-sentence — you yield the floor before anyone actually takes it.',
-            skill: 'Holding the floor',
-            skillKey: 'Assertiveness',
-            xp: 8,
+            type: 'observe',
+            text: "You rehearse conversations that haven't happened yet — the anxiety is doing the talking before anyone's said a word.",
           },
         ],
       },
@@ -604,8 +642,29 @@ export const SEED_SITUATIONS = [
   },
 ]
 
-export const NOTICED = {
-  text: 'Three of your recent situations involve avoiding a direct ask — the raise, the second date, the roommate thing.',
-  cta: 'Teach me to ask directly',
-  flowId: 'direct-ask',
+// ——— the You tab: Kael's read on you (patterns, not scores) ———
+export const READ_ON_YOU = [
+  {
+    text: "You overexplain when you're nervous — the paragraphs get longer as the stakes get higher.",
+    from: 'seen across 4 situations',
+  },
+  {
+    text: "You read silence as rejection. So far it's been busyness three times out of four.",
+    from: 'your texting situations',
+  },
+  {
+    text: 'You make it a joke when things get vulnerable. Funny is your armor — it works, but it costs you closeness.',
+    from: 'seen twice',
+  },
+  {
+    text: 'You avoid asking directly for what you want — the real ask is usually hiding in your third paragraph.',
+    from: 'work + dating',
+    cta: 'Work on this with me →',
+    flowId: 'direct-ask',
+  },
+]
+
+export const STILL_FORMING = {
+  text: 'How you handle conflict with family',
+  note: "no read yet — a couple more situations and I'll have one.",
 }

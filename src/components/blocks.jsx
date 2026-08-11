@@ -80,14 +80,13 @@ export default function KaelBlock({ block, onUse }) {
           <p>“{block.text}”</p>
         </div>
       )
-    case 'reflection':
+    case 'observe':
       return (
         <div className="reflect">
-          <div className="reflect-label">✦ something worth learning here</div>
-          <p className="reflect-insight">{block.insight}</p>
+          <div className="reflect-label">✦ one thing I noticed</div>
+          <p className="reflect-insight">{block.text}</p>
           <div className="reflect-row">
-            <span className="reflect-skill">{block.skill}</span>
-            <span className="reflect-xp">{block.skillKey} +{block.xp} xp</span>
+            <span className="reflect-skill">remembering this for next time</span>
           </div>
         </div>
       )

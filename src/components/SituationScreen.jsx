@@ -3,26 +3,25 @@ import { Blob } from './bits.jsx'
 import KaelBlock from './blocks.jsx'
 import { FLOWS } from '../data.js'
 
-export default function SituationScreen({ situation, onBack, onChip, onFree, onResolve }) {
+export default function SituationScreen({ situation, onBack, onChip, onFree, onWrap }) {
   const [input, setInput] = useState('')
   const scrollRef = useRef(null)
   const flow = FLOWS[situation.flowId]
   const node = flow.nodes[situation.nodeId]
-  const resolved = situation.status === 'resolved'
 
   useEffect(() => {
     const el = scrollRef.current
     if (el) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' })
   })
 
-  // clarifying options (tap-to-answer) vs action chips
-  const options = !resolved && !situation.typing ? node.options || [] : []
-  const chips = !resolved && !situation.typing ? node.chips || [] : []
-  const showResolve = !resolved && !situation.typing && situation.nodeId !== 'start' && situation.messages.length > 2
+  const quiet = situation.typing
+  const options = !quiet ? node.options || [] : []
+  const chips = !quiet ? node.chips || [] : []
+  const showWrap = !quiet && !situation.wrapped && situation.nodeId !== 'start' && situation.messages.length > 2
 
   function submit(e) {
     e.preventDefault()
-    if (!input.trim() || situation.typing || resolved) return
+    if (!input.trim() || situation.typing) return
     onFree(situation.id, input.trim())
     setInput('')
   }
@@ -37,9 +36,7 @@ export default function SituationScreen({ situation, onBack, onChip, onFree, onR
         </button>
         <div className="sit-head-title">
           <h2>{situation.title}</h2>
-          <span className={'status-pill ' + situation.status}>
-            {situation.status === 'open' ? '● open' : '✓ resolved'}
-          </span>
+          <span className="sit-when">{situation.when}</span>
         </div>
         <Blob size={36} />
       </div>
@@ -83,16 +80,16 @@ export default function SituationScreen({ situation, onBack, onChip, onFree, onR
       </div>
 
       <div className="chat-bottom">
-        {(chips.length > 0 || showResolve) && (
+        {(chips.length > 0 || showWrap) && (
           <div className="chips">
             {chips.map((c) => (
               <button className="chip" key={c.label} onClick={() => onChip(situation.id, c)}>
                 {c.label}
               </button>
             ))}
-            {showResolve && (
-              <button className="chip resolve-chip" onClick={() => onResolve(situation.id)}>
-                ✓ Mark resolved
+            {showWrap && (
+              <button className="chip wrap-chip" onClick={() => onWrap(situation.id)}>
+                🙏 That helps
               </button>
             )}
           </div>
@@ -101,10 +98,9 @@ export default function SituationScreen({ situation, onBack, onChip, onFree, onR
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder={resolved ? 'Situation resolved ✓' : 'Add details, or just vent…'}
-            disabled={resolved}
+            placeholder="Add details, or just vent…"
           />
-          <button className="send-btn" type="submit" disabled={!input.trim() || resolved}>
+          <button className="send-btn" type="submit" disabled={!input.trim()}>
             <svg width="17" height="17" viewBox="0 0 17 17" fill="none">
               <path d="M8.5 14V3M8.5 3L3.5 8M8.5 3l5 5" stroke="#fff6ec" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
