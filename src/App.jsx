@@ -5,6 +5,7 @@ import SituationScreen from './components/SituationScreen.jsx'
 import SituationsScreen from './components/SituationsScreen.jsx'
 import LearnScreen from './components/LearnScreen.jsx'
 import YouScreen from './components/YouScreen.jsx'
+import OnboardingFlow from './components/OnboardingFlow.jsx'
 import { FLOWS, SEED_SITUATIONS, routeFlow } from './data.js'
 
 const TABS = [
@@ -54,6 +55,7 @@ const TABS = [
 let nextId = 1
 
 export default function App() {
+  const [onboarded, setOnboarded] = useState(false)
   const [tab, setTab] = useState('home')
   const [activeId, setActiveId] = useState(null)
   const [situations, setSituations] = useState(SEED_SITUATIONS)
@@ -203,6 +205,22 @@ export default function App() {
 
       <div className="phone">
         <div className="screen">
+          {!onboarded && (
+            <>
+              <div className="island" />
+              <StatusBar />
+              <OnboardingFlow onDone={() => setOnboarded(true)} />
+            </>
+          )}
+          {onboarded && <AppShell />}
+        </div>
+      </div>
+    </div>
+  )
+
+  function AppShell() {
+    return (
+      <>
           <Splash />
           <div className="island" />
           <StatusBar />
@@ -257,8 +275,7 @@ export default function App() {
               </div>
             </div>
           )}
-        </div>
-      </div>
-    </div>
-  )
+      </>
+    )
+  }
 }

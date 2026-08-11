@@ -18,14 +18,29 @@
   --sage: #9fce9a;
   --sage-soft: #e6f2e2;
   --line: #e8dcc8;
+  --line-strong: #ddceb4;
 
-  --display: 'Clash Display', 'Avenir Next', sans-serif;
-  --body: 'General Sans', 'Avenir Next', -apple-system, sans-serif;
+  /* gym colors */
+  --gold: #ffb724;
+  --gold-deep: #e29a06;
+  --gold-soft: #fff0d0;
+  --teal: #00c2a8;
+  --teal-deep: #00a18b;
+  --teal-soft: #dcf7ef;
+  --miss: #ff6b6b;
+  --miss-soft: #ffe3e0;
+
+  --display: 'Baloo 2', 'Avenir Next Rounded', sans-serif;
+  --body: 'Nunito', 'Avenir Next', -apple-system, sans-serif;
 
   --r-lg: 26px;
   --r-md: 18px;
   --r-sm: 12px;
-  --shadow-card: 0 2px 0 rgba(36, 27, 22, 0.06), 0 10px 30px -12px rgba(36, 27, 22, 0.18);
+  --shadow-card: 0 3px 0 var(--line-strong);
+  --pop-coral: 0 4px 0 var(--coral-deep);
+  --pop-gold: 0 4px 0 var(--gold-deep);
+  --pop-teal: 0 4px 0 var(--teal-deep);
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -1506,6 +1521,231 @@ input { font-family: inherit; }
   border: 1px solid var(--butter);
   color: #8a5b12;
 }
+
+/* ————— Toy button system ————— */
+
+.btn {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 16.5px;
+  letter-spacing: 0.02em;
+  border-radius: var(--r-md);
+  padding: 15px 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: transform 0.08s, box-shadow 0.08s, filter 0.15s;
+  user-select: none;
+}
+.btn:active { transform: translateY(4px); box-shadow: none !important; }
+.btn-block { display: flex; width: 100%; }
+.btn-coral { background: var(--coral); color: #fff6ec; box-shadow: var(--pop-coral); }
+
+/* ————— Onboarding ————— */
+
+.ob {
+  position: absolute;
+  inset: 0;
+  z-index: 90;
+  background: var(--paper);
+  display: flex;
+  flex-direction: column;
+  border-radius: inherit;
+}
+.ob-page {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding-top: 54px;
+  animation: ob-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes ob-in { from { opacity: 0; transform: translateY(22px); } }
+.ob-center { align-items: center; justify-content: center; text-align: center; padding-left: 28px; padding-right: 28px; position: relative; overflow: hidden; }
+.ob-scroll { overflow-y: auto; padding: 60px 22px 24px; scrollbar-width: none; }
+.ob-scroll::-webkit-scrollbar { display: none; }
+
+.ob-blob { position: absolute; border-radius: 50%; }
+.ob-blob.a { top: -70px; right: -80px; width: 240px; height: 240px; background: var(--butter-soft); }
+.ob-blob.b { bottom: 60px; left: -100px; width: 220px; height: 220px; background: var(--sage-soft); }
+
+.ob-float { animation: floaty 3s ease-in-out infinite; position: relative; }
+@keyframes floaty { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+.ob-wiggle { animation: ob-wig 1.6s ease-in-out infinite; }
+@keyframes ob-wig { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-6deg); } 75% { transform: rotate(6deg); } }
+
+.ob-logo { font-family: var(--display); font-weight: 800; font-size: 46px; line-height: 1; margin-top: 6px; position: relative; }
+.ob-tag { font-size: 17px; font-weight: 800; color: var(--ink-soft); position: relative; margin-top: 2px; }
+.ob-sub { font-size: 14px; font-weight: 700; color: var(--ink-faint); position: relative; margin-top: 6px; }
+.ob-bottom { width: 100%; padding: 18px 0 20px; position: relative; }
+.ob-skip { display: block; margin: 12px auto 0; font-size: 12.5px; font-weight: 800; color: var(--ink-faint); }
+
+/* interview */
+.ob-head { display: flex; align-items: center; gap: 12px; padding: 6px 18px 10px; }
+.ob-progress { flex: 1; height: 13px; background: var(--line); border-radius: 8px; overflow: hidden; }
+.ob-progress-fill { height: 100%; background: var(--coral); border-radius: 8px; transition: width 0.5s var(--spring); }
+
+.ob-chat { flex: 1; overflow-y: auto; padding: 6px 18px 20px; scrollbar-width: none; }
+.ob-chat::-webkit-scrollbar { display: none; }
+.ob-msg { display: flex; margin-bottom: 9px; animation: msg-in 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.04) both; }
+.ob-msg.me { justify-content: flex-end; }
+.ob-msg .ob-bubble {
+  max-width: 82%;
+  padding: 11px 15px;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.4;
+  border-radius: 18px 18px 18px 5px;
+  background: var(--card);
+  border: 2px solid var(--line);
+  box-shadow: var(--shadow-card);
+}
+.ob-msg.me .ob-bubble {
+  border-radius: 18px 18px 5px 18px;
+  background: var(--coral);
+  color: #fff6ec;
+  border: none;
+  box-shadow: var(--pop-coral);
+}
+.ob-typing { display: inline-flex; gap: 4px; width: 62px; justify-content: center; }
+.ob-typing span { width: 7px; height: 7px; border-radius: 4px; background: var(--ink-faint); animation: bounce 1s infinite; }
+.ob-typing span:nth-child(2) { animation-delay: 0.14s; }
+.ob-typing span:nth-child(3) { animation-delay: 0.28s; }
+
+.ob-opts { display: flex; flex-direction: column; gap: 8px; padding: 6px 0 4px 8px; }
+.ob-caption { font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); }
+.ob-opt {
+  text-align: left;
+  background: var(--card);
+  border: 2px solid var(--line-strong);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-card);
+  padding: 13px 15px;
+  font-size: 14.5px;
+  font-weight: 700;
+  line-height: 1.35;
+  transition: transform 0.08s, box-shadow 0.08s, border-color 0.12s;
+  animation: msg-in 0.35s both;
+}
+.ob-opt:active { transform: translateY(3px); box-shadow: none; }
+.ob-opt:hover { border-color: var(--coral); }
+
+.ob-name-row { display: flex; gap: 10px; padding: 6px 0 4px 8px; animation: msg-in 0.35s both; }
+.ob-name-row input {
+  flex: 1;
+  padding: 13px 16px;
+  border-radius: 14px;
+  border: 2px solid var(--line-strong);
+  font-size: 15.5px;
+  font-weight: 700;
+  outline: none;
+  background: var(--card);
+  color: var(--ink);
+}
+.ob-name-row .btn { padding: 13px 18px; }
+
+/* analyzing */
+.ob-analyze-bar { width: 190px; height: 13px; background: var(--line); border-radius: 8px; overflow: hidden; margin-top: 22px; }
+.ob-analyze-fill { height: 100%; border-radius: 8px; background: linear-gradient(90deg, var(--coral), var(--gold)); animation: an-fill 2.8s ease-in-out both; }
+@keyframes an-fill { from { width: 5%; } to { width: 100%; } }
+.ob-analyze-line { margin-top: 16px; font-size: 15px; font-weight: 800; color: var(--ink-soft); animation: msg-in 0.4s both; }
+
+/* reveal + plan */
+.ob-eyebrow { text-align: center; font-size: 12px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--coral-deep); }
+.ob-h2 { font-family: var(--display); font-size: 25px; font-weight: 800; text-align: center; line-height: 1.15; margin: 4px 0 2px; }
+.ob-h2.center { margin-top: 8px; }
+.ob-arch {
+  text-align: center;
+  font-family: var(--display);
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--coral-deep);
+  line-height: 1.05;
+  margin: 2px 0 4px;
+  animation: arch-pop 0.6s 0.2s var(--spring) both;
+}
+@keyframes arch-pop { from { transform: scale(0.6); opacity: 0; } }
+.ob-radar { display: block; width: 82%; margin: 0 auto; overflow: visible; }
+.ob-radar .radar-ring { fill: none; stroke: var(--line-strong); stroke-width: 1.2; }
+.ob-radar .radar-axis { stroke: var(--line-strong); stroke-width: 1.2; }
+.ob-radar .radar-shape {
+  fill: rgba(255, 92, 57, 0.3);
+  stroke: var(--coral);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  transform-origin: 110px 92px;
+  animation: radar-in 0.9s 0.3s cubic-bezier(0.2, 1.2, 0.3, 1) both;
+}
+@keyframes radar-in { from { transform: scale(0); opacity: 0; } }
+.ob-radar .radar-dot { fill: var(--gold-deep); }
+.ob-radar .radar-label {
+  fill: var(--ink-faint);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  font-family: var(--body);
+}
+
+.ob-card {
+  background: var(--card);
+  border: 2px solid var(--line);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-card);
+  padding: 14px 15px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.5;
+  animation: msg-in 0.45s both;
+}
+.ob-card .small { font-size: 12.5px; line-height: 1.45; color: var(--ink-soft); }
+.ob-duo, .ob-promise { display: flex; gap: 10px; margin-bottom: 14px; }
+.ob-card.half { flex: 1; margin-bottom: 0; }
+.ob-card.teal { border-color: var(--teal); }
+.ob-card.coral { border-color: var(--coral); }
+.ob-mini { display: block; font-size: 10.5px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 4px; }
+.ob-card b { font-size: 15px; }
+.ob-sub2 { text-align: center; font-size: 13.5px; font-weight: 700; color: var(--ink-soft); margin-bottom: 14px; }
+.ob-proj { display: block; width: 100%; margin-top: 6px; }
+.proj-tag { font-size: 10px; font-weight: 800; fill: var(--ink-faint); font-family: var(--body); }
+.proj-tag.strong { fill: var(--teal-deep); }
+
+/* paywall */
+.ob-pay-fox { display: flex; justify-content: center; }
+.ob-checks { margin: 10px 0 14px; display: flex; flex-direction: column; gap: 7px; }
+.ob-checks p { font-size: 13.5px; font-weight: 700; }
+.ob-plan {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  text-align: left;
+  background: var(--card);
+  border: 2px solid var(--line-strong);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-card);
+  padding: 13px 15px;
+  margin-bottom: 9px;
+  transition: transform 0.08s, border-color 0.15s;
+}
+.ob-plan.on { border-color: var(--coral); box-shadow: 0 3px 0 var(--coral-deep); }
+.ob-plan b { display: block; font-size: 14px; line-height: 1.25; }
+.ob-plan span { font-size: 12px; font-weight: 700; color: var(--ink-soft); }
+.ob-badge {
+  flex-shrink: 0;
+  font-size: 10.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: var(--gold-soft);
+  border: 1.5px solid var(--gold);
+  color: #8a5b12;
+  border-radius: 999px;
+  padding: 5px 9px;
+}
+.ob-fine { text-align: center; font-size: 11.5px; font-weight: 700; color: var(--ink-faint); margin-top: 10px; }
 
 /* ————— Responsive: real phone = fullscreen ————— */
 
