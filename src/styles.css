@@ -1740,6 +1740,35 @@ input { font-family: inherit; }
 .q-opt:active { transform: translateY(3px); box-shadow: none; }
 .q-opt:hover { border-color: var(--coral); }
 
+.q-caption { font-size: 13px; font-weight: 700; color: var(--ink-faint); margin: -12px 0 18px; }
+
+/* the climb: tier path on the reveal */
+.path { display: flex; flex-direction: column; }
+.path-stop { display: flex; align-items: baseline; gap: 11px; padding: 7px 0; position: relative; }
+.path-stop .path-dot {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--paper-2);
+  border: 2.5px solid var(--line-strong);
+  flex-shrink: 0;
+  align-self: center;
+}
+.path-stop.now .path-dot { background: var(--coral); border-color: var(--coral-deep); animation: pulse 2s infinite; }
+.path-stop b { font-family: var(--display); font-size: 15px; font-weight: 700; }
+.path-stop.now b { color: var(--coral-deep); }
+.path-stop em {
+  font-style: normal;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--coral-deep);
+  background: var(--coral-soft);
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
 /* baseline bars on the plan screen */
 .ps-track { flex: 1; height: 11px; border-radius: 999px; background: var(--line); overflow: hidden; }
 .ps-fill {

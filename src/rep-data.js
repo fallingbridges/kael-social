@@ -244,10 +244,10 @@ export const INTERSTITIAL = {
 
 export function noticedLine(tally) {
   if ((tally.fold || 0) >= 3)
-    return 'You hold the first no, then hand it back when they push. Holding under pressure is your next unlock, we\'ll train exactly that.'
+    return "Your first no is already solid. Holding it when they push is the next unlock, and it's very trainable. Tomorrow we start there."
   if ((tally.harsh || 0) >= 2)
-    return 'Your boundaries are strong, the delivery starts fires you then have to put out. We\'ll work on warm firmness next.'
-  if ((tally.strong || 0) >= 6)
-    return 'Warm AND firm under real pressure. You barely flinched. Next session we raise the weight properly.'
-  return 'Clear instincts, occasional wobble under pressure, which is exactly what reps are for. Same time tomorrow?'
+    return "You've got the firm part down cold. Add warm delivery and you'll be dangerous. That's tomorrow's rep."
+  if ((tally.strong || 0) >= 3)
+    return 'Warm AND firm, barely flinched. You came in stronger than most. Tomorrow we raise the weight.'
+  return 'Good instincts already in there. Reps turn instincts into habits. Same time tomorrow?'
 }

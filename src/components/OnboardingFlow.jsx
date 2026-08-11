@@ -4,25 +4,25 @@ import RepPlayer from './RepPlayer.jsx'
 import { CONTEXT_SETS, REP_BY_ID, noticedLine } from '../rep-data.js'
 import {
   ANALYZE_LINES,
+  COMMIT_LINES,
   CONTEXT_LABELS,
-  COST_LINES,
-  PATTERNS,
   QUESTIONS,
-  SKILL_KEYS,
-  computeBaseline,
+  STRENGTH_LINES,
+  TRACKS,
+  computeStrength,
 } from '../onboarding-data.js'
 
 const strip = (label) => label.replace(/^[^\w"'“]+\s*/, '')
 
 export default function OnboardingFlow({ onDone }) {
-  const [phase, setPhase] = useState('welcome') // welcome | questions | analyzing | plan | workout | earned | paywall
+  const [phase, setPhase] = useState('welcome') // welcome | questions | analyzing | reveal | workout | earned | paywall
   const [name, setName] = useState('')
   const [tags, setTags] = useState({})
   const [quotes, setQuotes] = useState({})
-  const [baseline, setBaseline] = useState(null)
+  const [strength, setStrength] = useState('Reading people')
   const [workout, setWorkout] = useState(null)
 
-  const pattern = PATTERNS[tags.pattern] || PATTERNS.fold
+  const track = TRACKS[tags.goal] || TRACKS.no
   const repSet = (CONTEXT_SETS[tags.context] || CONTEXT_SETS.friends).map((id) => REP_BY_ID[id])
 
   return (
@@ -30,26 +30,25 @@ export default function OnboardingFlow({ onDone }) {
       {phase === 'welcome' && <Welcome onNext={() => setPhase('questions')} onSkip={onDone} />}
       {phase === 'questions' && (
         <Questions
-          name={name}
           setName={setName}
           onDone={(tagMap, quoteMap, picked) => {
             setTags(tagMap)
             setQuotes(quoteMap)
-            setBaseline(computeBaseline(picked))
+            setStrength(computeStrength(picked))
             setPhase('analyzing')
           }}
         />
       )}
-      {phase === 'analyzing' && <Analyzing onDone={() => setPhase('plan')} />}
-      {phase === 'plan' && (
-        <Plan name={name} pattern={pattern} tags={tags} quotes={quotes} baseline={baseline} onNext={() => setPhase('workout')} />
+      {phase === 'analyzing' && <Analyzing onDone={() => setPhase('reveal')} />}
+      {phase === 'reveal' && (
+        <Reveal name={name} track={track} strength={strength} tags={tags} onNext={() => setPhase('workout')} />
       )}
       {phase === 'workout' && (
         <div className="ob-workout">
           <RepPlayer
             reps={repSet}
-            skillName={pattern.program.skillName}
-            skillEmoji={pattern.program.emoji}
+            skillName={track.program.skillName}
+            skillEmoji={track.program.emoji}
             onDone={(res) => {
               setWorkout(res)
               setPhase('earned')
@@ -57,8 +56,8 @@ export default function OnboardingFlow({ onDone }) {
           />
         </div>
       )}
-      {phase === 'earned' && <Earned name={name} pattern={pattern} workout={workout} onNext={() => setPhase('paywall')} />}
-      {phase === 'paywall' && <Paywall name={name} pattern={pattern} tags={tags} workout={workout} onDone={onDone} />}
+      {phase === 'earned' && <Earned name={name} track={track} workout={workout} onNext={() => setPhase('paywall')} />}
+      {phase === 'paywall' && <Paywall name={name} track={track} tags={tags} quotes={quotes} workout={workout} onDone={onDone} />}
     </div>
   )
 }
@@ -74,7 +73,7 @@ function Welcome({ onNext, onSkip }) {
       </div>
       <h1 className="ob-logo">kael</h1>
       <p className="ob-tag">the gym for your social skills</p>
-      <p className="ob-sub">train moments. not theory.</p>
+      <p className="ob-sub">charisma is reps. let's get you some.</p>
       <div className="ob-bottom">
         <button className="btn btn-coral btn-block" onClick={onNext}>let's go</button>
         <button className="ob-skip" onClick={onSkip}>skip for now</button>
@@ -84,7 +83,7 @@ function Welcome({ onNext, onSkip }) {
 }
 
 /* ================= Questions: one per screen ================= */
-function Questions({ name, setName, onDone }) {
+function Questions({ setName, onDone }) {
   const [idx, setIdx] = useState(0)
   const [draft, setDraft] = useState('')
   const [tags] = useState({})
@@ -122,6 +121,7 @@ function Questions({ name, setName, onDone }) {
       </div>
       <div className="q-body">
         <h2 className="q-title">{q.title}</h2>
+        {q.caption && <p className="q-caption">{q.caption}</p>}
         {q.input ? (
           <form className="ob-name-row" onSubmit={submitName}>
             <input autoFocus value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="your name…" />
@@ -163,57 +163,54 @@ function Analyzing({ onDone }) {
   )
 }
 
-/* ================= Plan ================= */
-function Plan({ name, pattern, tags, quotes, baseline, onNext }) {
-  const prog = pattern.program
+/* ================= Reveal: your track ================= */
+function Reveal({ name, track, strength, tags, onNext }) {
   return (
     <div className="ob-page ob-scroll">
-      <p className="ob-eyebrow">ok {name}, here's my read</p>
-      <div className="ob-arch">{pattern.archetype}</div>
+      <p className="ob-eyebrow">you're in, {name} 🎉</p>
+      <h2 className="ob-h2 center">your track:</h2>
+      <div className="ob-arch">{track.program.emoji} {track.title}</div>
+      <p className="ob-sub2">{track.promise}</p>
+
       <div className="ob-card">
-        <p>{pattern.blurb}</p>
+        <span className="ob-mini">natural strength</span>
+        <b>{STRENGTH_LINES[strength]}</b>
       </div>
 
       <div className="ob-card">
-        <span className="ob-mini">your starting read</span>
-        {SKILL_KEYS.map((k) => (
-          <div className="plan-skill" key={k}>
-            <span>{k}</span>
-            <div className="ps-track">
-              <div className="ps-fill" style={{ width: `${baseline[k]}%` }} />
+        <span className="ob-mini">your climb</span>
+        <div className="path">
+          {track.tiers.map((t, i) => (
+            <div className={'path-stop' + (i === 0 ? ' now' : '')} key={t}>
+              <span className="path-dot" />
+              <b>{t}</b>
+              {i === 0 && <em>you start here</em>}
             </div>
-            <b>{baseline[k]}</b>
-          </div>
-        ))}
-        <p className="plan-skill-note">from your answers. gets real as you train.</p>
-      </div>
-
-      <div className="ob-card plan-prog">
-        <span className="ob-mini">your program</span>
-        <b>{prog.emoji} {prog.name}</b>
-        <div className="ob-trace">
-          <p><b>first target:</b> {prog.focus}</p>
-          <p><b>arena:</b> {CONTEXT_LABELS[tags.context]}, where you said it's worst</p>
-          <p><b>goal:</b> “{quotes.aspiration}”</p>
+          ))}
         </div>
       </div>
 
+      <div className="earned-chips">
+        <span className="earned-chip">{COMMIT_LINES[tags.commit] || COMMIT_LINES.serious}</span>
+        <span className="earned-chip">🎯 set in {CONTEXT_LABELS[tags.context]}</span>
+      </div>
+
       <button className="btn btn-coral btn-block" onClick={onNext}>
-        first workout · 3 reps
+        start Lv 1 · 3 reps
       </button>
     </div>
   )
 }
 
 /* ================= Earned ================= */
-function Earned({ name, pattern, workout, onNext }) {
+function Earned({ name, track, workout, onNext }) {
   const total = Object.values(workout?.tally || {}).reduce((a, b) => a + b, 0)
   return (
     <div className="ob-page ob-scroll ob-earned">
       <div className="ob-pay-fox">
         <Fox pose="cheer" size={104} />
       </div>
-      <h2 className="ob-h2 center">day 1. done.</h2>
+      <h2 className="ob-h2 center">day 1. done. 🎉</h2>
       <p className="ob-sub2">that counted, {name}.</p>
       <div className="earned-chips">
         <span className="earned-chip">🔥 streak lit</span>
@@ -221,12 +218,12 @@ function Earned({ name, pattern, workout, onNext }) {
         <span className="earned-chip">🏋️ {total} reps</span>
       </div>
       <div className="ob-card">
-        <span className="ob-mini">{pattern.program.emoji} {pattern.program.skillName} · Lv 1</span>
-        <b>{pattern.tier}</b>
+        <span className="ob-mini">{track.program.emoji} {track.program.skillName} · Lv 1</span>
+        <b>{track.tiers[0]}</b>
         <p className="small" style={{ marginTop: 3 }}>everyone starts here. nobody stays.</p>
       </div>
       <div className="ob-card">
-        <span className="ob-mini">✦ early read</span>
+        <span className="ob-mini">✦ coach's note</span>
         <p className="small">{noticedLine(workout?.tally || {})}</p>
       </div>
       <button className="btn btn-coral btn-block" onClick={onNext}>
@@ -237,9 +234,8 @@ function Earned({ name, pattern, workout, onNext }) {
 }
 
 /* ================= Paywall ================= */
-function Paywall({ name, pattern, tags, workout, onDone }) {
+function Paywall({ name, track, tags, quotes, workout, onDone }) {
   const [plan, setPlan] = useState('annual')
-  const stake = COST_LINES[tags.cost] || 'get good with people'
   return (
     <div className="ob-page ob-scroll">
       <div className="earned-chips" style={{ justifyContent: 'center' }}>
@@ -248,17 +244,18 @@ function Paywall({ name, pattern, tags, workout, onDone }) {
         <span className="earned-chip">🔥 streak lit</span>
       </div>
       <h2 className="ob-h2 center">
-        {pattern.archetype.toLowerCase()}'s plan to {stake}
+        3 months from now: “{quotes.aspiration}”
       </h2>
+      <p className="ob-sub2">that's the plan, {name}. let's keep it.</p>
       <div className="ob-card tmrw">
         <span className="ob-mini">📅 tomorrow's set, ready</span>
-        <p className="small"><b>{pattern.tomorrow}</b> · 3 reps · {CONTEXT_LABELS[tags.context]}</p>
+        <p className="small"><b>{track.tomorrow}</b> · 3 reps · {CONTEXT_LABELS[tags.context]}</p>
       </div>
       <div className="ob-checks">
-        <p>✅ {pattern.program.emoji} {pattern.program.name}, adapting as you train</p>
-        <p>✅ unlimited reps, rising difficulty</p>
+        <p>✅ {track.program.emoji} {track.program.name}, climbing with you</p>
+        <p>✅ unlimited reps, all 4 tracks</p>
         <p>✅ roleplays that push back</p>
-        <p>✅ real levels, measured from play</p>
+        <p>✅ levels earned from play</p>
       </div>
       <button className={'ob-plan' + (plan === 'annual' ? ' on' : '')} onClick={() => setPlan('annual')}>
         <div>
