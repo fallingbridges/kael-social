@@ -13,7 +13,7 @@ import {
   WEIGHT_OPTIONS,
 } from '../onboarding-data.js'
 
-const PHASES = ['splash', 'intro', 'muscles', 'cheer1', 'arena', 'cheer2', 'weight', 'pace', 'cheer3', 'workout', 'pump', 'proof', 'floor', 'paywall']
+const PHASES = ['splash', 'intro', 'muscles', 'cheer1', 'arena', 'cheer2', 'weight', 'pace', 'cheer3', 'howto', 'workout', 'pump', 'proof', 'floor', 'paywall']
 
 export default function OnboardingFlow({ onDone }) {
   const [phase, setPhase] = useState('splash')
@@ -27,7 +27,7 @@ export default function OnboardingFlow({ onDone }) {
   const program = PROGRAM_BY_MUSCLE[primary.id]
   const repSet = (CONTEXT_SETS[arena?.tag] || CONTEXT_SETS.friends).map((id) => REP_BY_ID[id])
   const go = (p) => setPhase(p)
-  const progress = Math.max(0.06, PHASES.indexOf(phase) / 9)
+  const progress = Math.max(0.06, PHASES.indexOf(phase) / 10)
 
   return (
     <div className="ob">
@@ -109,8 +109,22 @@ export default function OnboardingFlow({ onDone }) {
         </FoxQuestion>
       )}
 
-      {phase === 'cheer3' && (
-        <Cheer line={`${pace.reps} a day. good contract, ${name}.`} sub="let's find your starting weight. 3 reps, real situations." cta="first set →" onNext={() => go('workout')} />
+      {phase === 'cheer3' && <Cheer line={`${pace.reps} a day. good contract, ${name}.`} onNext={() => go('howto')} />}
+
+      {phase === 'howto' && (
+        <FoxQuestion
+          progress={progress}
+          lines={[
+            'quick, how training works:',
+            "I drop you into a real situation. someone says something. you pick what you'd actually say.",
+            "I coach your pick. that's one rep.",
+          ]}
+          caption="no wrong answers. every rep earns XP."
+        >
+          <button className="btn btn-coral btn-block" onClick={() => go('workout')}>
+            first set · 3 reps
+          </button>
+        </FoxQuestion>
       )}
 
       {phase === 'workout' && (
@@ -155,8 +169,29 @@ function Splash({ onNext, onSkip }) {
   )
 }
 
-/* ===== fox-led question screen ===== */
+/* ===== fox-led question screen: the fox types ===== */
 function FoxQuestion({ progress, lines, caption, children }) {
+  const [shown, setShown] = useState(0)
+  const [typing, setTyping] = useState(true)
+  const done = shown >= lines.length
+
+  useEffect(() => {
+    let delay = 350
+    const timers = []
+    lines.forEach((line, i) => {
+      const dur = Math.min(900, 380 + line.length * 12)
+      timers.push(setTimeout(() => setTyping(true), delay))
+      timers.push(
+        setTimeout(() => {
+          setShown(i + 1)
+          setTyping(i + 1 < lines.length)
+        }, delay + dur),
+      )
+      delay += dur + 260
+    })
+    return () => timers.forEach(clearTimeout)
+  }, [])
+
   return (
     <div className="ob-page q-page">
       <div className="ob-head">
@@ -166,16 +201,21 @@ function FoxQuestion({ progress, lines, caption, children }) {
       </div>
       <div className="fq">
         <div className="fq-fox">
-          <Fox pose="happy" size={64} />
+          <Fox pose={typing ? 'think' : 'happy'} size={64} />
         </div>
-        <div className="fq-bubble">
-          {lines.map((l, i) => (
-            <p key={i}>{l}</p>
+        <div className="fq-col">
+          {lines.slice(0, shown).map((l, i) => (
+            <div className="fqb" key={i}>{l}</div>
           ))}
+          {typing && (
+            <div className="fqb fq-dots">
+              <span /><span /><span />
+            </div>
+          )}
         </div>
       </div>
-      {caption && <p className="fq-caption">{caption}</p>}
-      <div className="fq-body">{children}</div>
+      {done && caption && <p className="fq-caption">{caption}</p>}
+      <div className="fq-body">{done && children}</div>
     </div>
   )
 }
