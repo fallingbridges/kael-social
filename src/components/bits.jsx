@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react'
 
 // Kael's face — a squishy coral blob with blinking eyes
-export function Blob({ size }) {
+export function Blob({ size, variant }) {
   return (
-    <div className="blob" style={size ? { width: size, height: size } : undefined}>
+    <div
+      className={'blob' + (variant ? ' ' + variant : '')}
+      style={size ? { width: size, height: size } : undefined}
+    >
       <div className="face">
         <div className="eyes">
           <span className="eye" />

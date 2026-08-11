@@ -652,44 +652,38 @@ export const ARCHETYPE = {
   progress: 70,
 }
 
-export const SKILL_JOURNEYS = [
-  {
-    key: 'Reading people',
-    stage: 'Pattern Spotter',
-    step: 4,
-    of: 5,
-    evidence: 'you called the boss thing before I did.',
-  },
-  {
-    key: 'Speaking up',
-    stage: 'Finding the Voice',
-    step: 3,
-    of: 5,
-    evidence: '"let me land this thought" — and it landed.',
-  },
-  {
-    key: 'Conflict',
-    stage: 'De-escalator in Training',
-    step: 3,
-    of: 5,
-    evidence: 'you exited the public round with grace.',
-  },
-  {
-    key: 'Dating & ambiguity',
-    stage: 'Fan-Fiction Author',
-    step: 2,
-    of: 5,
-    evidence: "the 'k' incident. we don't need to relive it.",
-  },
-  {
-    key: 'Boundaries',
-    stage: 'Recovering Yes-Sayer',
-    step: 2,
-    of: 5,
-    evidence: 'one clean no last week. zero apologies. historic.',
-    cta: 'Train this with me →',
-    flowId: 'say-no',
-  },
+// radar axes, 0–1. order matters: drawn clockwise from the top.
+export const RADAR = [
+  { label: 'Reading', value: 0.8 },
+  { label: 'Charm', value: 0.72 },
+  { label: 'Nerve', value: 0.55 },
+  { label: 'Boundaries', value: 0.42 },
+  { label: 'Conflict', value: 0.6 },
+  { label: 'Clarity', value: 0.66 },
+]
+
+export const WEAKEST = { label: 'Boundaries', cta: 'Train it with me →', flowId: 'say-no' }
+
+export const STATS = [
+  { num: '23', label: 'texts decoded' },
+  { num: '4', label: 'fires put out' },
+  { num: '6', label: 'hard talks survived' },
+]
+
+export const PLAY_OF_WEEK = {
+  title: 'The standup comeback',
+  text: 'Interrupted twice, held the floor anyway: "let me land this thought." The room noticed.',
+}
+
+export const BADGES = [
+  { emoji: '🙅', name: 'First Clean No', earned: true },
+  { emoji: '🧘', name: 'Waited It Out', earned: true },
+  { emoji: '🎤', name: 'Held the Floor', earned: true },
+  { emoji: '🔮', name: 'Read It Right', earned: true },
+  { emoji: '🧯', name: 'Fight Whisperer', earned: false },
+  { emoji: '🥶', name: '???', earned: false },
+  { emoji: '💌', name: '???', earned: false },
+  { emoji: '👑', name: '???', earned: false },
 ]
 
 export const RECEIPTS = [
