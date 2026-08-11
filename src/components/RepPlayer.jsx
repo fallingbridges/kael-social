@@ -62,16 +62,17 @@ export default function RepPlayer() {
     return gained
   }
 
-  function openSheet(opt) {
+  function openSheet(opt, others) {
     const gained = award(opt.quality)
     if (inBeat2) {
       setPressureTries((n) => n + 1)
       if (opt.quality === 'strong') setPressureWins((n) => n + 1)
     }
-    setSheet({ ...opt, xp: gained, showBetter: false })
+    setSheet({ ...opt, xp: gained, others, showOthers: false })
   }
 
   function pick(opt) {
+    const others = (options || []).filter((o) => o !== opt)
     setOptions(null)
     setBubbles((b) => [...b, { who: 'me', text: opt.text }])
     if (opt.next) {
@@ -90,7 +91,7 @@ export default function RepPlayer() {
         }, 450),
       )
     } else {
-      timers.current.push(setTimeout(() => openSheet(opt), 550))
+      timers.current.push(setTimeout(() => openSheet(opt, others), 550))
     }
   }
 
@@ -254,16 +255,29 @@ export default function RepPlayer() {
               </div>
             </div>
             <p className="rep-sheet-why">{sheet.why}</p>
-            {sheet.better && sheet.showBetter && (
+            {sheet.better && (
               <div className="rep-better">
                 <span>the stronger move</span>
                 <p>“{sheet.better}”</p>
               </div>
             )}
+            {sheet.showOthers && (
+              <div className="rep-others">
+                {sheet.others.filter((o) => o.text !== sheet.better).map((o, i) => (
+                  <div className="rep-other" key={i}>
+                    <span className={'rep-dot ' + o.quality} />
+                    <div>
+                      <p className="rep-other-text">“{o.text}”</p>
+                      <span className="rep-other-verdict">{o.verdict}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
             <div className="rep-sheet-btns">
-              {sheet.better && !sheet.showBetter && (
-                <button className="rep-ghost-btn" onClick={() => setSheet((s) => ({ ...s, showBetter: true }))}>
-                  show me the stronger move
+              {sheet.others?.length > 0 && !sheet.showOthers && (
+                <button className="rep-ghost-btn" onClick={() => setSheet((s) => ({ ...s, showOthers: true }))}>
+                  how would the other moves land?
                 </button>
               )}
               <button className="btn btn-coral btn-block" onClick={nextRep}>

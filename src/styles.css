@@ -1914,6 +1914,29 @@ input { font-family: inherit; }
 }
 .rep-better span { display: block; font-size: 10.5px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal-deep); margin-bottom: 4px; }
 .rep-better p { font-size: 14px; font-weight: 700; line-height: 1.4; }
+.rep-others {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+  animation: msg-in 0.3s both;
+}
+.rep-other { display: flex; gap: 9px; align-items: flex-start; }
+.rep-dot {
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-top: 4px;
+}
+.rep-dot.strong { background: var(--teal); }
+.rep-dot.almost { background: var(--gold); }
+.rep-dot.fold, .rep-dot.harsh { background: var(--miss); }
+.rep-other-text { font-size: 12.5px; font-weight: 700; line-height: 1.35; color: var(--ink-soft); }
+.rep-other-verdict { font-size: 11px; font-weight: 800; color: var(--ink-faint); }
+
+.rep-sheet { max-height: 78%; overflow-y: auto; scrollbar-width: none; }
+.rep-sheet::-webkit-scrollbar { display: none; }
 .rep-sheet-btns { display: flex; flex-direction: column; gap: 9px; }
 .rep-ghost-btn {
   font-size: 13.5px;
