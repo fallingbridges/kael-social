@@ -3,7 +3,7 @@ import { Splash, StatusBar } from './components/bits.jsx'
 import HomeScreen from './components/HomeScreen.jsx'
 import SituationScreen from './components/SituationScreen.jsx'
 import SituationsScreen from './components/SituationsScreen.jsx'
-import YouScreen from './components/YouScreen.jsx'
+import LearnScreen from './components/LearnScreen.jsx'
 import { FLOWS, SEED_SITUATIONS, routeFlow } from './data.js'
 
 const TABS = [
@@ -28,12 +28,13 @@ const TABS = [
     ),
   },
   {
-    id: 'you',
-    label: 'You',
+    id: 'learn',
+    label: 'Learn',
     icon: (
-      <svg width="21" height="21" viewBox="0 0 21 21" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="10.5" cy="7" r="3.5" />
-        <path d="M4 18c.8-3.2 3.4-5 6.5-5s5.7 1.8 6.5 5" />
+      <svg width="21" height="21" viewBox="0 0 21 21" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+        <path d="M4 10.5h13" />
+        <path d="M5.5 7v7M15.5 7v7" />
+        <path d="M2.8 8.5v4M18.2 8.5v4" />
       </svg>
     ),
   },
@@ -132,10 +133,21 @@ export default function App() {
     kaelSays(id, next.blocks, option.next)
   }
 
-  // "Train this with me →" from the You tab
-  function workOn(skill) {
-    setTab('home')
-    newSituation('I keep folding when I try to say no — train me', skill.flowId)
+  // start (or resume) a drill from the Learn tab — drills open with Kael talking
+  function startDrill(drill) {
+    const existing = situations.find((s) => s.flowId === drill.id)
+    if (existing) {
+      setActiveId(existing.id)
+      return
+    }
+    const flow = FLOWS[drill.id]
+    const id = 'sit-' + nextId++
+    setSituations((all) => [
+      { id, title: flow.title, emoji: flow.emoji, when: 'practice', kind: 'drill', flowId: drill.id, nodeId: 'start', messages: [] },
+      ...all,
+    ])
+    setActiveId(id)
+    kaelSays(id, flow.nodes.start.blocks, 'start')
   }
 
   return (
@@ -162,7 +174,7 @@ export default function App() {
             />
           ) : tab === 'home' ? (
             <HomeScreen
-              situations={situations}
+              situations={situations.filter((s) => s.kind !== 'drill')}
               onNew={newSituation}
               onOpen={setActiveId}
               onFollowUp={followUp}
@@ -170,11 +182,11 @@ export default function App() {
             />
           ) : tab === 'situations' ? (
             <div className="tab-pane">
-              <SituationsScreen situations={situations} onOpen={setActiveId} />
+              <SituationsScreen situations={situations.filter((s) => s.kind !== 'drill')} onOpen={setActiveId} />
             </div>
           ) : (
             <div className="tab-pane">
-              <YouScreen onWorkOn={workOn} />
+              <LearnScreen onDrill={startDrill} />
             </div>
           )}
 

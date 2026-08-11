@@ -489,6 +489,194 @@ export const FLOWS = {
     },
   },
 
+  // ————— drills: roleplay reps, no real stakes —————
+  'drill-guilt': {
+    title: 'The Guilt-Tripper',
+    emoji: '🧟',
+    keywords: [],
+    observation: null,
+    nodes: {
+      start: {
+        blocks: [
+          t("drill time 🏋️ I'm your friend asking you to cover my shift — third time this month. no real stakes, full reps. ready?"),
+          { type: 'roleplay', as: 'your friend', text: "pleaseee, I know it's last minute but you're literally the only person I trust with this. remember when I helped you move?" },
+          t('what do you say?'),
+        ],
+        options: [
+          { label: 'Ugh… fine, I\'ll do it', next: 'cave' },
+          { label: "I'm so sorry, it's just that I have this thing and—", next: 'sorry' },
+          { label: "Can't this time! Hope you find someone 🤞", next: 'clean' },
+        ],
+      },
+      cave: {
+        blocks: [
+          t("the classic cave 😩 you just taught them shift #4 is also free. notice the math: their one favor last year is buying your third weekend this month."),
+          t("run it back — this time protect the weekend."),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+      sorry: {
+        blocks: [
+          t("see what happened mid-sentence? you started negotiating with yourself in public. every excuse you hand them is a handle to grab — and a guilt-tripper collects handles."),
+          t('the no can be warm AND handle-free. try the short one.'),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+      clean: {
+        blocks: [
+          t("💯 clean. warm, short, zero doors left open — and notice: nothing exploded. the friendship survives your no."),
+          t('ready for the boss level? guilt-trippers escalate when the old tricks stop working.'),
+        ],
+        chips: [{ label: '😈 Harder mode', next: 'hard' }, { label: 'Run it again', next: 'start' }],
+      },
+      hard: {
+        blocks: [
+          { type: 'roleplay', as: 'your friend', text: 'wow. okay. I guess I just know where we stand now.' },
+          t('the escalation. what do you do?'),
+        ],
+        options: [
+          { label: 'Okay okay wait — I\'ll do it, don\'t be like that', next: 'fold' },
+          { label: '"Sounds like you\'re disappointed — fair. Still can\'t this time."', next: 'hold' },
+        ],
+      },
+      fold: {
+        blocks: [
+          t("and THAT'S the move the whole act was designed for. the drama was the price tag, and you paid it."),
+          t("remember: their disappointment is weather, not an emergency. run it again and stand in the rain for one more sentence."),
+        ],
+        chips: [{ label: 'Run it again', next: 'hard' }],
+      },
+      hold: {
+        blocks: [
+          t("🔥 that's the whole skill. you named the feeling, held the line, and didn't match the escalation. guilt-trips die in calm weather."),
+          t("that's a full rep. next time this happens in real life, your mouth already knows the words."),
+        ],
+        chips: [{ label: 'Run the drill again', next: 'start' }],
+      },
+    },
+  },
+
+  'drill-interrupt': {
+    title: 'The Interrupter',
+    emoji: '🎤',
+    keywords: [],
+    observation: null,
+    nodes: {
+      start: {
+        blocks: [
+          t("drill time 🏋️ team meeting, you're two sentences into your idea. here it comes—"),
+          { type: 'roleplay', as: 'your coworker', text: "—okay we get it, let's just move on. anyway, about the launch date…" },
+          t('what do you do?'),
+        ],
+        options: [
+          { label: 'Go quiet, bring it up after the meeting', next: 'quiet' },
+          { label: '"Let me land this thought — thirty seconds."', next: 'land' },
+          { label: '"Can I FINISH? seriously."', next: 'snap' },
+        ],
+      },
+      quiet: {
+        blocks: [
+          t("safe, but it leaks status. the room just learned your ideas can be skipped — and rooms remember."),
+          t("you don't need volume, you need one calm sentence of presence. try it."),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+      land: {
+        blocks: [
+          t("💯 exactly. calm, specific, no apology, no drama — the room hears authority, not conflict. and notice: nobody thinks you're rude. they think you're someone who finishes."),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+      snap: {
+        blocks: [
+          t("understandable — but the snap makes YOU the incident. the room stops hearing your idea and starts watching a fight."),
+          t("same message, lower temperature: 'let me land this thought.' it wins the same ground without the debris."),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+    },
+  },
+
+  'drill-cold': {
+    title: 'The Cold Text',
+    emoji: '🥶',
+    keywords: [],
+    observation: null,
+    nodes: {
+      start: {
+        blocks: [
+          t("drill time 🏋️ you sent a good message an hour ago. the reply just arrived:"),
+          { type: 'roleplay', as: 'your crush', text: 'k' },
+          t('your move.'),
+        ],
+        options: [
+          { label: 'did I do something wrong?? 🥺', next: 'chase' },
+          { label: 'wow ok. why are you being so dry lol', next: 'audit' },
+          { label: '(nothing now) then later: "rate your week 1–10, no 7s allowed"', next: 'cool' },
+        ],
+      },
+      chase: {
+        blocks: [
+          t("you replied to the story in your head, not the text. one 'k' now owns your whole evening — that's a lot of power to hand a single letter."),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+      audit: {
+        blocks: [
+          t("never audit their punctuation out loud 💀 now the conversation is about the conversation — the least attractive topic that exists."),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+      cool: {
+        blocks: [
+          t("💯 that's the one. no pursuit, no audit — just an easy door back in on your timeline. if they walk through it, great. if not, you spent zero dignity."),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+    },
+  },
+
+  'drill-lowball': {
+    title: 'The Lowball',
+    emoji: '💰',
+    keywords: [],
+    observation: null,
+    nodes: {
+      start: {
+        blocks: [
+          t("drill time 🏋️ final round went great. then the offer call:"),
+          { type: 'roleplay', as: 'the hiring manager', text: "so — budget's tight this quarter. best we can do is 70. I'd need an answer by tomorrow." },
+          t('what do you say?'),
+        ],
+        options: [
+          { label: 'Okay… yeah, I can make that work', next: 'accept' },
+          { label: 'Oh. I was hoping for a bit more, but…', next: 'trail' },
+          { label: '"I\'m targeting 85 based on the role and market." (then silence)', next: 'anchor' },
+        ],
+      },
+      accept: {
+        blocks: [
+          t("instant yes = you just told them the lowball worked, and the fake deadline too. that discount compounds every year you're there."),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+      trail: {
+        blocks: [
+          t("you opened the door and then… trailed off. a hope is not a number. they can't negotiate against 'a bit more', so they won't."),
+          t('say the number. then let the silence do its job.'),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+      anchor: {
+        blocks: [
+          t("💯 number first, evidence attached, and then the hard part — you didn't fill the silence. whoever talks first after the number is negotiating with themselves."),
+          t("full rep. your voice will want to shrink on the real call — now it has muscle memory."),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+    },
+  },
+
   // ————— generic fallback —————
   generic: {
     title: null,
@@ -644,65 +832,25 @@ export const SEED_SITUATIONS = [
 
 // ——— the You tab: identity, skill journeys, and growth receipts ———
 
-export const ARCHETYPE = {
-  name: 'The Overthinking Charmer',
-  desc: "Quick wit, deep reads, genuinely warm — occasionally builds a full conspiracy board out of one 'k'.",
-  next: 'The Calm Reader',
-  nextNote: 'two more situations handled like last Tuesday and you evolve',
-  progress: 70,
+// ——— the Learn tab: a practice gym, not a library ———
+
+export const DRILLS = [
+  { id: 'drill-guilt', emoji: '🧟', title: 'The Guilt-Tripper', sub: 'Say no. Survive the guilt.', time: '2 min', tint: 'coral' },
+  { id: 'drill-interrupt', emoji: '🎤', title: 'The Interrupter', sub: 'Hold the floor, calmly', time: '2 min', tint: 'butter' },
+  { id: 'drill-cold', emoji: '🥶', title: 'The Cold Text', sub: "Don't chase the 'k'", time: '1 min', tint: 'sage' },
+  { id: 'drill-lowball', emoji: '💰', title: 'The Lowball', sub: 'Counter without flinching', time: '2 min', tint: 'butter' },
+  { id: 'drill-silence', emoji: '🤐', title: 'The Awkward Silence', sub: 'Unlocks after your next situation', tint: 'coral', locked: true },
+  { id: 'drill-backhand', emoji: '🎭', title: 'The Backhanded Compliment', sub: 'Unlocks after your next situation', tint: 'sage', locked: true },
+]
+
+export const RECOMMENDED = {
+  drillId: 'drill-guilt',
+  because: 'How do I say no?',
 }
 
-// radar axes, 0–1. order matters: drawn clockwise from the top.
-export const RADAR = [
-  { label: 'Reading', value: 0.8 },
-  { label: 'Charm', value: 0.72 },
-  { label: 'Nerve', value: 0.55 },
-  { label: 'Boundaries', value: 0.42 },
-  { label: 'Conflict', value: 0.6 },
-  { label: 'Clarity', value: 0.66 },
-]
-
-export const WEAKEST = { label: 'Boundaries', cta: 'Train it with me →', flowId: 'say-no' }
-
-export const STATS = [
-  { num: '23', label: 'texts decoded' },
-  { num: '4', label: 'fires put out' },
-  { num: '6', label: 'hard talks survived' },
-]
-
-export const PLAY_OF_WEEK = {
-  title: 'The standup comeback',
-  text: 'Interrupted twice, held the floor anyway: "let me land this thought." The room noticed.',
-}
-
-export const BADGES = [
-  { emoji: '🙅', name: 'First Clean No', earned: true },
-  { emoji: '🧘', name: 'Waited It Out', earned: true },
-  { emoji: '🎤', name: 'Held the Floor', earned: true },
-  { emoji: '🔮', name: 'Read It Right', earned: true },
-  { emoji: '🧯', name: 'Fight Whisperer', earned: false },
-  { emoji: '🥶', name: '???', earned: false },
-  { emoji: '💌', name: '???', earned: false },
-  { emoji: '👑', name: '???', earned: false },
-]
-
-export const RECEIPTS = [
-  {
-    then: 'Triple-texted the second she went quiet',
-    thenWhen: '3 weeks ago',
-    now: 'Waited it out — she texted first',
-    nowWhen: 'last week',
-  },
-  {
-    then: 'Said yes to a favor you dreaded for days',
-    thenWhen: 'last month',
-    now: 'First clean no. No apology spiral after',
-    nowWhen: 'this week',
-  },
-  {
-    then: 'Went silent when your boss interrupted',
-    thenWhen: '3 weeks ago',
-    now: 'Held the floor: "let me land this thought"',
-    nowWhen: 'monday',
-  },
+export const TRAINING = [
+  { skill: 'Boundaries', note: 'trained 2× this week', hot: true },
+  { skill: 'Speaking up', note: 'trained once this week', hot: true },
+  { skill: 'Dating & ambiguity', note: 'not yet this week' },
+  { skill: 'Negotiation', note: 'new — first rep waiting' },
 ]

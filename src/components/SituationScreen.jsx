@@ -17,7 +17,8 @@ export default function SituationScreen({ situation, onBack, onChip, onFree, onW
   const quiet = situation.typing
   const options = !quiet ? node.options || [] : []
   const chips = !quiet ? node.chips || [] : []
-  const showWrap = !quiet && !situation.wrapped && situation.nodeId !== 'start' && situation.messages.length > 2
+  const showWrap =
+    !quiet && !situation.wrapped && situation.kind !== 'drill' && situation.nodeId !== 'start' && situation.messages.length > 2
 
   function submit(e) {
     e.preventDefault()
