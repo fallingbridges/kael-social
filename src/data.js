@@ -677,6 +677,339 @@ export const FLOWS = {
     },
   },
 
+  'drill-walkin': {
+    title: 'The Walk-In',
+    emoji: '🦁',
+    keywords: [],
+    observation: null,
+    nodes: {
+      start: {
+        blocks: [
+          t("drill time 🏋️ house party. you walk in and realize you know exactly one person here — and they're deep in conversation across the room."),
+          t('what do you do?'),
+        ],
+        options: [
+          { label: 'Post up by the wall and look busy on my phone', next: 'phone' },
+          { label: 'Head to the kitchen: "ok what\'s actually good here?"', next: 'kitchen' },
+          { label: 'Orbit my one friend until they\'re free', next: 'orbit' },
+        ],
+      },
+      phone: {
+        blocks: [
+          t("the phone is a wall you carry with you. it says 'I'm occupied' — which reads as 'don't approach' — which guarantees the exact loneliness you're avoiding."),
+          t("confidence isn't feeling ready. it's moving before you feel ready. run it back."),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+      kitchen: {
+        blocks: [
+          t("💯 the kitchen move. situational openers beat clever openers every time — you're not performing, you're just... there, being easy to talk to."),
+          t("secret: everyone at that party is also relieved someone started talking. you didn't take a risk, you did the room a favor."),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+      orbit: {
+        blocks: [
+          t("the barnacle strategy 🦪 safe, but you've outsourced your whole night to someone else's social calendar — and third-wheeling a conversation reads needier than standing alone."),
+          t("use them as a launchpad, not a life raft: one intro, then drift on purpose."),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+    },
+  },
+
+  'drill-story': {
+    title: 'The Rambling Story',
+    emoji: '🎭',
+    keywords: [],
+    observation: null,
+    nodes: {
+      start: {
+        blocks: [
+          t("drill time 🏋️ dinner table, six people. someone asks:"),
+          { type: 'roleplay', as: 'the table', text: 'wait, you got stranded in Lisbon?? what happened?' },
+          t('you open with…'),
+        ],
+        options: [
+          { label: '"So our flight was at 9:40, and we got to the gate around 9—"', next: 'chrono' },
+          { label: '"One word: goats. — no wait, I have to back up."', next: 'hook' },
+          { label: '"Honestly it was a whole thing, it\'s fine now"', next: 'deflect' },
+        ],
+      },
+      chrono: {
+        blocks: [
+          t("the chronological death march 💀 nobody needs the gate number. by the time you reach the good part, the table's refilled their drinks."),
+          t("rule: start as close to the explosion as possible. the boarding pass is not the story."),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+      hook: {
+        blocks: [
+          t('💯 "one word: goats" is a loop you opened in their heads — now they NEED the ending. that\'s the whole craft: open loops, feed them slowly, close them late.'),
+          t("you also gave yourself permission to back up — the audience follows a confident narrator anywhere."),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+      deflect: {
+        blocks: [
+          t("you had GOLD and buried it 🪦 someone handed you the spotlight and you turned it off. the table wasn't asking for information — they were asking for a show."),
+          t("you don't have to be a comedian. you just have to not end the story before it starts."),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+    },
+  },
+
+  'drill-deadend': {
+    title: 'The Dead End',
+    emoji: '☕',
+    keywords: [],
+    observation: null,
+    nodes: {
+      start: {
+        blocks: [
+          t("drill time 🏋️ coffee with a new acquaintance. you ask how they're doing:"),
+          { type: 'roleplay', as: 'them', text: "good, yeah… busy. you?" },
+          t('the conversation is flatlining. your move:'),
+        ],
+        options: [
+          { label: '"Haha yeah… crazy weather lately"', next: 'weather' },
+          { label: '"Busy with anything fun, or just… busy busy?"', next: 'door' },
+          { label: 'Accept death, check phone', next: 'phone' },
+        ],
+      },
+      weather: {
+        blocks: [
+          t("the weather is where conversations go to die — but respect for not surrendering. you're one follow-up away from an actual topic."),
+          t("small talk isn't the destination, it's the door handle. you have to actually turn it."),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+      door: {
+        blocks: [
+          t('💯 you took their nothing-answer and cut a door in it. "busy busy or fun busy" is playful, easy to answer, and secretly asks "tell me about your life."'),
+          t("that's the whole small-talk skill: every dead end has a hidden door. your job is one good follow-up, not eleven topics."),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+      phone: {
+        blocks: [
+          t("the phone pull is contagious — two seconds later they're on theirs, and now you're two strangers charging glass rectangles at each other."),
+          t("hold the silence one beat longer than comfortable. then ask the follow-up. run it back."),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+    },
+  },
+
+  'drill-bomb': {
+    title: 'The Bomb',
+    emoji: '😏',
+    keywords: [],
+    observation: null,
+    nodes: {
+      start: {
+        blocks: [
+          t("drill time 🏋️ you drop your best joke at lunch. and…"),
+          { type: 'roleplay', as: 'the table', text: '…' },
+          t("total silence. one person coughs. what now?"),
+        ],
+        options: [
+          { label: 'Explain it: "no because see, the funny part is—"', next: 'explain' },
+          { label: '"Wow. tough room 😌" — and move on', next: 'own' },
+          { label: 'Go quiet and replay it internally for an hour', next: 'spiral' },
+        ],
+      },
+      explain: {
+        blocks: [
+          t("explaining a joke is performing its autopsy at the funeral 💀 now it's died twice and you were present both times."),
+          t("bombs are tuition. pay it, move on, funnier next round."),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+      own: {
+        blocks: [
+          t('💯 "tough room" IS the joke now — and it always lands, because what people actually find funny is someone who can\'t be embarrassed.'),
+          t("the secret of funny people isn't a higher hit rate. it's total indifference to the misses."),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+      spiral: {
+        blocks: [
+          t("the silent replay 😔 nobody else is thinking about it — they moved on in four seconds. you're the only attendee at this memorial."),
+          t("say literally anything next. re-entering the conversation is the recovery."),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+    },
+  },
+
+  'drill-signals': {
+    title: 'The Mixed Signals',
+    emoji: '🔮',
+    keywords: [],
+    observation: null,
+    nodes: {
+      start: {
+        blocks: [
+          t("drill time 🏋️ your usually-chatty coworker has been short with you all morning. one-word answers, no eye contact."),
+          t("what's your read?"),
+        ],
+        options: [
+          { label: 'Ask directly: "are you mad at me?"', next: 'direct' },
+          { label: 'Note it, say nothing, see if it holds tomorrow', next: 'observe' },
+          { label: 'Match their coldness so they feel it too', next: 'mirror' },
+        ],
+      },
+      direct: {
+        blocks: [
+          t('bold, but premature — "are you mad at me?" makes their weather about you, and 9 times out of 10 it was never about you. now they have to manage YOUR feelings mid-bad-day.'),
+          t("pattern beats datapoint. one cold morning is noise."),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+      observe: {
+        blocks: [
+          t("💯 that's the read. one cold morning = they have a life. three cold days = something's up, and THEN you ask — about them, not about you: 'you've seemed off — all good?'"),
+          t("reading people is mostly just… waiting for more data before writing the story."),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+      mirror: {
+        blocks: [
+          t("the cold war opener ❄️ now there are two mysteries nobody's solving, and next week neither of you remembers who started it."),
+          t("never match energy you haven't diagnosed. stay warm, stay curious, wait."),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+    },
+  },
+
+  'drill-vent': {
+    title: 'The Vent',
+    emoji: '👂',
+    keywords: [],
+    observation: null,
+    nodes: {
+      start: {
+        blocks: [
+          t("drill time 🏋️ your friend calls, already mid-rant:"),
+          { type: 'roleplay', as: 'your friend', text: "—and then she took credit for MY deck in front of the VP. I'm losing my mind." },
+          t('you say:'),
+        ],
+        options: [
+          { label: '"You need to email the VP right now, here\'s what to say—"', next: 'fixit' },
+          { label: '"WHAT. she did not. okay tell me everything"', next: 'witness' },
+          { label: '"Ugh, same thing happened to me in 2022, so basically—"', next: 'hijack' },
+        ],
+      },
+      fixit: {
+        blocks: [
+          t("the fix-it reflex 🔧 well-meant, but they didn't call for a contractor — they called for a witness. advice before empathy always lands as dismissal."),
+          t("rule: nobody can hear solutions until they feel heard. feelings first, logistics later — if they ask."),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+      witness: {
+        blocks: [
+          t("💯 that's listening. you matched their outrage, then handed them the mic back. 'tell me everything' is the most underrated sentence in friendship."),
+          t("bonus move for later: 'do you want ideas or do you want company?' — it's cheat-code level."),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+      hijack: {
+        blocks: [
+          t("story hijack 🏴‍☠️ you just took the mic mid-crisis. your 2022 saga can wait — their fire is burning NOW."),
+          t("relatability is one sentence: 'I've been there, it's awful.' then give the mic back."),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+    },
+  },
+
+  'drill-compliment': {
+    title: 'The Compliment',
+    emoji: '💘',
+    keywords: [],
+    observation: null,
+    nodes: {
+      start: {
+        blocks: [
+          t("drill time 🏋️ second date, it's going well. you want to say something that lands. you go with…"),
+          t('pick your shot:'),
+        ],
+        options: [
+          { label: '"You\'re really pretty"', next: 'generic' },
+          { label: '"You have strong \'ordered the best thing on the menu\' energy"', next: 'specific' },
+          { label: '"You\'re surprisingly smart, I wasn\'t expecting that"', next: 'neg' },
+        ],
+      },
+      generic: {
+        blocks: [
+          t("sweet, but it compliments their genetics — something they've heard since high school and had no hand in. it warms the room by one degree, max."),
+          t("upgrade rule: compliment the choice, not the chassis. what they picked, said, did, noticed."),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+      specific: {
+        blocks: [
+          t("💯 specific + playful + about their JUDGMENT, not their face. it says 'I've been paying attention to who you are' — which is the entire point of flirting."),
+          t("and it opens a game: now they get to defend or own the energy. compliments that start conversations beat compliments that end them."),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+      neg: {
+        blocks: [
+          t('"surprisingly"?? 💀 that\'s a compliment wearing an insult\'s jacket. negging died in 2010 and we do not perform séances here.'),
+          t("confidence is making them feel bigger, not smaller. run it back."),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+    },
+  },
+
+  'drill-snap': {
+    title: 'The Snap',
+    emoji: '🧯',
+    keywords: [],
+    observation: null,
+    nodes: {
+      start: {
+        blocks: [
+          t("drill time 🏋️ you ask your partner a totally normal question and get:"),
+          { type: 'roleplay', as: 'your partner', text: "can you just— NOT right now? god." },
+          t('your move:'),
+        ],
+        options: [
+          { label: '"Wow ok, excuse me for existing"', next: 'counter' },
+          { label: '"Rough day? I\'ll give you space — I\'m around."', next: 'steady' },
+          { label: 'Say nothing, radiate silence all evening', next: 'freeze' },
+        ],
+      },
+      counter: {
+        blocks: [
+          t("counter-snap 💥 congratulations, it's a fight now — about tone, which is the only fight with no winner. their bad day just became your bad night."),
+          t("the snap was about their day. taking the bait makes it about your relationship."),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+      steady: {
+        blocks: [
+          t("💯 that's emotional aikido. you didn't absorb the hit OR return it — you named the likely cause, offered space, left the door open."),
+          t("ten minutes from now you get an apology instead of a cold war. steady is contagious."),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+      freeze: {
+        blocks: [
+          t("the silent counterattack ❄️ it feels dignified, but it's just the fight in stealth mode — and it can outlast the original snap by DAYS."),
+          t("you can skip the fight without starting the freeze: one warm sentence, then genuinely let it go."),
+        ],
+        chips: [{ label: 'Run it again', next: 'start' }],
+      },
+    },
+  },
+
   // ————— generic fallback —————
   generic: {
     title: null,
@@ -832,25 +1165,33 @@ export const SEED_SITUATIONS = [
 
 // ——— the You tab: identity, skill journeys, and growth receipts ———
 
-// ——— the Learn tab: a practice gym, not a library ———
+// ——— the Learn tab: a catalogue of trainable social skills ———
+// every skill has a live drill — tap it, practice immediately.
 
-export const DRILLS = [
-  { id: 'drill-guilt', emoji: '🧟', title: 'The Guilt-Tripper', sub: 'Say no. Survive the guilt.', time: '2 min', tint: 'coral' },
-  { id: 'drill-interrupt', emoji: '🎤', title: 'The Interrupter', sub: 'Hold the floor, calmly', time: '2 min', tint: 'butter' },
-  { id: 'drill-cold', emoji: '🥶', title: 'The Cold Text', sub: "Don't chase the 'k'", time: '1 min', tint: 'sage' },
-  { id: 'drill-lowball', emoji: '💰', title: 'The Lowball', sub: 'Counter without flinching', time: '2 min', tint: 'butter' },
-  { id: 'drill-silence', emoji: '🤐', title: 'The Awkward Silence', sub: 'Unlocks after your next situation', tint: 'coral', locked: true },
-  { id: 'drill-backhand', emoji: '🎭', title: 'The Backhanded Compliment', sub: 'Unlocks after your next situation', tint: 'sage', locked: true },
+export const SKILLS = [
+  { skill: 'Confidence', emoji: '🦁', id: 'drill-walkin', drillName: 'The Walk-In', tint: 'coral' },
+  { skill: 'Storytelling', emoji: '🎭', id: 'drill-story', drillName: 'The Rambling Story', tint: 'butter' },
+  { skill: 'Boundaries', emoji: '🛑', id: 'drill-guilt', drillName: 'The Guilt-Tripper', tint: 'sage' },
+  { skill: 'Small talk', emoji: '☕', id: 'drill-deadend', drillName: 'The Dead End', tint: 'butter' },
+  { skill: 'Flirting', emoji: '💘', id: 'drill-compliment', drillName: 'The Compliment', tint: 'coral' },
+  { skill: 'Humor', emoji: '😏', id: 'drill-bomb', drillName: 'The Bomb', tint: 'sage' },
+  { skill: 'Speaking up', emoji: '🎤', id: 'drill-interrupt', drillName: 'The Interrupter', tint: 'sage' },
+  { skill: 'Reading people', emoji: '🔮', id: 'drill-signals', drillName: 'The Mixed Signals', tint: 'coral' },
+  { skill: 'Listening', emoji: '👂', id: 'drill-vent', drillName: 'The Vent', tint: 'butter' },
+  { skill: 'Conflict', emoji: '🧯', id: 'drill-snap', drillName: 'The Snap', tint: 'coral' },
+  { skill: 'Negotiation', emoji: '💰', id: 'drill-lowball', drillName: 'The Lowball', tint: 'butter' },
+  { skill: 'Texting', emoji: '📱', id: 'drill-cold', drillName: 'The Cold Text', tint: 'sage' },
 ]
 
 export const RECOMMENDED = {
   drillId: 'drill-guilt',
+  skill: 'Boundaries',
   because: 'How do I say no?',
 }
 
 export const TRAINING = [
   { skill: 'Boundaries', note: 'trained 2× this week', hot: true },
   { skill: 'Speaking up', note: 'trained once this week', hot: true },
-  { skill: 'Dating & ambiguity', note: 'not yet this week' },
+  { skill: 'Texting', note: 'not yet this week' },
   { skill: 'Negotiation', note: 'new — first rep waiting' },
 ]

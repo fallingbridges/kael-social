@@ -1,12 +1,12 @@
 import React from 'react'
-import { DRILLS, RECOMMENDED, TRAINING } from '../data.js'
+import { RECOMMENDED, SKILLS, TRAINING } from '../data.js'
 
 export default function LearnScreen({ onDrill }) {
-  const rec = DRILLS.find((d) => d.id === RECOMMENDED.drillId)
+  const rec = SKILLS.find((s) => s.id === RECOMMENDED.drillId)
   return (
     <div className="page-scroll">
       <h1 className="page-title">Learn</h1>
-      <p className="page-sub">Drills, not lectures. Get the reps in before life tests you.</p>
+      <p className="page-sub">Every social skill is trainable. Pick one, get your reps in.</p>
 
       <div className="streak-line">🏋️ 3 practice days this week — nice cadence</div>
 
@@ -15,27 +15,20 @@ export default function LearnScreen({ onDrill }) {
         <div className="rec-body">
           <span className="rec-emoji">{rec.emoji}</span>
           <div className="rec-info">
-            <h3>{rec.title}</h3>
-            <p>{rec.sub}</p>
+            <h3>{rec.skill}</h3>
+            <p>{rec.drillName}</p>
           </div>
           <span className="rec-go">Start →</span>
         </div>
       </button>
 
-      <div className="sect-label">Drills</div>
-      <div className="pb-grid">
-        {DRILLS.map((d) => (
-          <button
-            className={`pb-card ${d.tint}` + (d.locked ? ' locked' : '')}
-            key={d.id}
-            onClick={() => !d.locked && onDrill(d)}
-          >
-            <span className="pb-splat" />
-            <span className="pb-emoji">{d.locked ? '🔒' : d.emoji}</span>
-            {!d.locked && <span className="pb-go">→</span>}
-            {!d.locked && d.time && <span className="pb-time">{d.time}</span>}
-            <h3>{d.title}</h3>
-            <p>{d.sub}</p>
+      <div className="sect-label">All skills</div>
+      <div className="sk-grid">
+        {SKILLS.map((s) => (
+          <button className={`sk-card ${s.tint}`} key={s.id} onClick={() => onDrill(s)}>
+            <span className="sk-emoji">{s.emoji}</span>
+            <b>{s.skill}</b>
+            <span className="sk-drill">▶ {s.drillName}</span>
           </button>
         ))}
       </div>

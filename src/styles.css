@@ -857,26 +857,46 @@ input { font-family: inherit; }
   box-shadow: 0 4px 12px -2px rgba(232, 67, 31, 0.5);
 }
 
-.pb-time {
+/* skill catalogue */
+.sk-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+.sk-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  text-align: left;
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-card);
+  padding: 12px 10px 11px;
+  overflow: hidden;
+  transition: transform 0.18s cubic-bezier(0.2, 0.9, 0.3, 1.4);
+  animation: msg-in 0.45s both;
+}
+.sk-card:active { transform: scale(0.93); }
+.sk-card:nth-child(3n + 2) { animation-delay: 0.05s; }
+.sk-card:nth-child(3n) { animation-delay: 0.1s; }
+.sk-card::before {
+  content: '';
   position: absolute;
-  bottom: 14px;
-  right: 14px;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  color: var(--ink-faint);
-  background: var(--paper-2);
-  padding: 3px 8px;
-  border-radius: 999px;
+  top: -18px;
+  right: -18px;
+  width: 56px;
+  height: 56px;
+  border-radius: 46% 54% 52% 48% / 54% 46% 54% 46%;
 }
-.pb-card.locked {
-  border-style: dashed;
-  background: var(--paper-2);
-  box-shadow: none;
-  opacity: 0.75;
-}
-.pb-card.locked .pb-splat { opacity: 0.35; }
-.pb-card.locked h3 { color: var(--ink-faint); }
+.sk-card.coral::before { background: var(--coral-soft); }
+.sk-card.butter::before { background: var(--butter-soft); }
+.sk-card.sage::before { background: var(--sage-soft); }
+.sk-emoji { font-size: 24px; filter: drop-shadow(0 2px 4px rgba(36, 27, 22, 0.15)); position: relative; }
+.sk-card b { font-family: var(--display); font-size: 13.5px; font-weight: 600; line-height: 1.1; position: relative; }
+.sk-drill { font-size: 9.5px; font-weight: 700; color: var(--coral-deep); letter-spacing: 0.02em; }
 
 .train-row {
   display: flex;
