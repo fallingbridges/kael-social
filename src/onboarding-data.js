@@ -1,102 +1,129 @@
-// ——— Kael onboarding v2: the coach intake ———
-// Self-report for direction (pain, context, pattern, cost, aspiration).
-// Ability is never claimed here — the gym measures that through play.
+// ——— Kael onboarding v3: one question per screen, every answer weighted ———
+// Weights land on the 5 core skills. Baseline = self-reported starting read,
+// sharpened by actual training. Casual copy, no lectures.
 
-export const INTERVIEW = [
-  {
-    id: 'name',
-    lines: ["hey, I'm kael 🦊 your coach.", "quick intake before we train — what should I call you?"],
-    input: true,
-  },
+export const SKILL_KEYS = ['Reading people', 'Expression', 'Assertiveness', 'Conflict', 'Connection']
+
+// R = Reading people, E = Expression, A = Assertiveness, Cf = Conflict, Cn = Connection
+export const QUESTIONS = [
+  { id: 'name', title: 'what do I call you?', input: true },
   {
     id: 'pain',
-    lines: ['good to meet you, {name}.', 'so — what made you walk into a social gym? be honest 😄'],
+    title: "why'd you come?",
     options: [
-      { tag: 'steamrolled', label: '😤 I keep getting steamrolled — work, friends, everywhere' },
-      { tag: 'overthink', label: '🌀 I replay conversations and overthink everything' },
-      { tag: 'invisible', label: '🫥 I hold back — in groups I basically go invisible' },
-      { tag: 'wall', label: '💔 my relationships keep hitting the same wall' },
+      { tag: 'walkover', label: '😤 people walk over me', w: { Assertiveness: -2 } },
+      { tag: 'overthink', label: '🌀 I overthink everything', w: { 'Reading people': -2 } },
+      { tag: 'invisible', label: '🫥 I go invisible in groups', w: { Connection: -2, Expression: -1 } },
+      { tag: 'blowup', label: '💥 my relationships keep blowing up', w: { Conflict: -2 } },
     ],
   },
   {
     id: 'context',
-    lines: ['ok. and where does it sting the most right now?'],
+    title: "where's it worst?",
     options: [
-      { tag: 'work', label: '💼 work — meetings, bosses, asks' },
-      { tag: 'dating', label: '❤️ dating & relationships' },
-      { tag: 'friends', label: '👥 friends & the group chat' },
-      { tag: 'family', label: '🏠 family. it\'s a whole thing' },
+      { tag: 'work', label: '💼 work' },
+      { tag: 'dating', label: '❤️ dating' },
+      { tag: 'friends', label: '👥 friends' },
+      { tag: 'family', label: '🏠 family' },
+    ],
+  },
+  {
+    id: 'party',
+    title: 'party. you know one person. they vanish. you…',
+    options: [
+      { tag: 'phone', label: '📱 phone out, snack table', w: { Connection: -2 } },
+      { tag: 'hover', label: '🫣 hover near a group, wait forever', w: { Connection: -1, Expression: -1 } },
+      { tag: 'solo', label: '👋 find another solo person', w: { Connection: 2 } },
+      { tag: 'loud', label: '🗣️ jump into the loudest circle', w: { Connection: 1, 'Reading people': -1 } },
+    ],
+  },
+  {
+    id: 'vent',
+    title: 'friend calls, mid-rant about their boss. you say…',
+    options: [
+      { tag: 'listen', label: '“tell me everything”', w: { 'Reading people': 2, Connection: 1 } },
+      { tag: 'fix', label: '“ok here\'s what you should do”', w: { 'Reading people': -2 } },
+      { tag: 'metoo', label: '“same thing happened to me!”', w: { Expression: 1, 'Reading people': -1 } },
+      { tag: 'freeze', label: '😶 honestly, I freeze', w: { Expression: -1, Connection: -1 } },
     ],
   },
   {
     id: 'pattern',
-    lines: ['got it. now the important one —', 'when the moment actually comes… which one is most you?'],
-    caption: 'no judgment. this decides where we start',
+    title: 'in the hard moment, you usually…',
     options: [
-      { tag: 'fold', label: '🫠 I fold the second they push back' },
-      { tag: 'freeze', label: '🤐 I freeze — the right words show up an hour later' },
-      { tag: 'story', label: '🔍 I read too much into everything, then react to the story' },
-      { tag: 'volcano', label: '🌋 I either explode or bury it. no middle setting' },
+      { tag: 'fold', label: '🫠 fold when they push', w: { Assertiveness: -2 } },
+      { tag: 'freeze', label: '🤐 freeze. words show up later', w: { Expression: -2 } },
+      { tag: 'story', label: '🔍 spiral on the story in my head', w: { 'Reading people': -2 } },
+      { tag: 'volcano', label: '🌋 explode or bury it', w: { Conflict: -2 } },
     ],
   },
   {
     id: 'cost',
-    lines: ['and what is this actually costing you?', 'be honest — this goes on the training plan.'],
+    title: "what's it costing you?",
     options: [
-      { tag: 'opportunities', label: '🚪 opportunities I never went for' },
-      { tag: 'relationships', label: '💔 relationships that drifted or blew up' },
-      { tag: 'selfrespect', label: '🪞 self-respect. I fold and I hate it' },
-      { tag: 'peace', label: '🌀 peace — I replay conversations at 2am' },
+      { tag: 'opportunities', label: '🚪 opportunities' },
+      { tag: 'relationships', label: '💔 relationships' },
+      { tag: 'selfrespect', label: '🪞 self-respect' },
+      { tag: 'peace', label: '🌀 sleep & peace' },
     ],
   },
   {
     id: 'aspiration',
-    lines: ['last one. three months from now —', 'what do you want to be true?'],
+    title: "3 months from now, what's true?",
     options: [
-      { tag: 'sayit', label: '🎤 I say what I mean, when it matters' },
-      { tag: 'time', label: '🛡️ I protect my time without guilt' },
-      { tag: 'closer', label: '💞 closer friendships, better dates, less drama' },
-      { tag: 'calm', label: '😌 I stop replaying and start living' },
+      { tag: 'sayit', label: '🎤 I say what I mean' },
+      { tag: 'time', label: '🛡️ my time is protected' },
+      { tag: 'closer', label: '💞 closer people, less drama' },
+      { tag: 'calm', label: '😌 no more 2am replays' },
     ],
   },
 ]
 
-// pattern → the mirror + the program (framed as reflection, never measurement)
+export function computeBaseline(picked) {
+  const scores = Object.fromEntries(SKILL_KEYS.map((k) => [k, 55]))
+  for (const opt of picked) {
+    for (const [k, w] of Object.entries(opt.w || {})) scores[k] += w * 6
+  }
+  for (const k of SKILL_KEYS) scores[k] = Math.max(22, Math.min(84, scores[k]))
+  return scores
+}
+
+// pattern → mirror + program. short, casual, zero em dashes.
 export const PATTERNS = {
   fold: {
     archetype: 'The Charming Pushover',
-    blurb: 'Everyone loves you — that\'s half the problem. Your first no is usually fine. It\'s the pushback, the sigh, the disappointed face that empties your pockets.',
-    program: { name: 'Boundary Builder', emoji: '🛡️', skillName: 'Boundary Setting', focus: 'holding your no when they push back' },
+    blurb: "everyone likes you. that's half the problem. your no is fine until they push. then it folds.",
+    program: { name: 'Boundary Builder', emoji: '🛡️', skillName: 'Boundary Setting', focus: 'holding your no when they push' },
     tier: 'Recovering Yes-Sayer',
     tomorrow: 'holding your no when they get disappointed',
   },
   freeze: {
     archetype: 'The Vault',
-    blurb: 'It\'s all in there — the wit, the comeback, the honest sentence. It just clears security about an hour after the moment ends. We\'re moving you closer to the door.',
-    program: { name: 'Say It Right', emoji: '🎙️', skillName: 'Speaking Up', focus: 'finding the words while the moment is still alive' },
+    blurb: "the perfect line always shows up an hour late. we're fixing the delivery time.",
+    program: { name: 'Say It Right', emoji: '🎙️', skillName: 'Speaking Up', focus: 'finding words while the moment is alive' },
     tier: 'Finding the Voice',
-    tomorrow: 'the 5-second opener — speaking before the window closes',
+    tomorrow: 'speaking up before the window closes',
   },
   story: {
     archetype: 'The Fan-Fiction Author',
-    blurb: 'One "k" and you\'ve written three chapters by midnight. Your imagination is elite — it\'s just been assigned to the wrong job. We\'re retraining it to read what\'s actually there.',
-    program: { name: 'Signal Reader', emoji: '🔮', skillName: 'Reading People', focus: 'reacting to what\'s real, not the story' },
+    blurb: "one dry text and you've written a whole season finale. let's read what's actually there.",
+    program: { name: 'Signal Reader', emoji: '🔮', skillName: 'Reading People', focus: 'reacting to what happened, not the story' },
     tier: 'Recovering Novelist',
-    tomorrow: 'one ambiguous text, three readings — picking the real one',
+    tomorrow: 'one vague text, three readings. pick the real one',
   },
   volcano: {
     archetype: 'The Pressure Cooker',
-    blurb: 'You bury it and bury it and bury it — and then it\'s Vesuvius over a dishwasher. There\'s a middle setting between silence and eruption. We\'re installing it.',
-    program: { name: 'Cool Head', emoji: '🧯', skillName: 'Cool Conflict', focus: 'saying the hard thing at low temperature' },
+    blurb: "you bury it, bury it, bury it. then boom. we're installing a middle setting.",
+    program: { name: 'Cool Head', emoji: '🧯', skillName: 'Cool Conflict', focus: 'saying the hard thing, calmly' },
     tier: 'Defusing in Progress',
-    tomorrow: 'raising the issue BEFORE it becomes the eruption',
+    tomorrow: 'the hard thing, said at low temperature',
   },
 }
 
 export const CONTEXT_LABELS = {
-  work: 'work — bosses, coworkers, meetings',
-  dating: 'dating & relationships',
-  friends: 'friends & the group chat',
+  work: 'work',
+  dating: 'dating',
+  friends: 'friends',
   family: 'family',
 }
 
@@ -107,6 +134,4 @@ export const COST_LINES = {
   peace: 'stop replaying conversations at 2am',
 }
 
-export const SKILL_KEYS = ['Reading people', 'Expression', 'Assertiveness', 'Conflict', 'Connection']
-
-export const ANALYZE_LINES = ['listening…', 'matching scenarios to your life…', 'building your program…']
+export const ANALYZE_LINES = ['reading your answers…', 'picking your scenarios…', 'building your program…']

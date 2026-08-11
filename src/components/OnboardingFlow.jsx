@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Fox from './Fox.jsx'
 import RepPlayer from './RepPlayer.jsx'
 import { CONTEXT_SETS, REP_BY_ID, noticedLine } from '../rep-data.js'
@@ -6,40 +6,43 @@ import {
   ANALYZE_LINES,
   CONTEXT_LABELS,
   COST_LINES,
-  INTERVIEW,
   PATTERNS,
+  QUESTIONS,
   SKILL_KEYS,
+  computeBaseline,
 } from '../onboarding-data.js'
 
-const strip = (label) => label.replace(/^[^\w"']+\s*/, '') // drop leading emoji for quotes
+const strip = (label) => label.replace(/^[^\w"'“]+\s*/, '')
 
 export default function OnboardingFlow({ onDone }) {
-  const [phase, setPhase] = useState('welcome') // welcome | chat | analyzing | plan | workout | earned | paywall
+  const [phase, setPhase] = useState('welcome') // welcome | questions | analyzing | plan | workout | earned | paywall
   const [name, setName] = useState('')
-  const [tags, setTags] = useState({}) // stepId -> tag
-  const [quotes, setQuotes] = useState({}) // stepId -> chosen label text
-  const [workout, setWorkout] = useState(null) // {xp, tally}
+  const [tags, setTags] = useState({})
+  const [quotes, setQuotes] = useState({})
+  const [baseline, setBaseline] = useState(null)
+  const [workout, setWorkout] = useState(null)
 
   const pattern = PATTERNS[tags.pattern] || PATTERNS.fold
   const repSet = (CONTEXT_SETS[tags.context] || CONTEXT_SETS.friends).map((id) => REP_BY_ID[id])
 
   return (
     <div className="ob">
-      {phase === 'welcome' && <Welcome onNext={() => setPhase('chat')} onSkip={onDone} />}
-      {phase === 'chat' && (
-        <Interview
+      {phase === 'welcome' && <Welcome onNext={() => setPhase('questions')} onSkip={onDone} />}
+      {phase === 'questions' && (
+        <Questions
           name={name}
           setName={setName}
-          onDone={(tagMap, quoteMap) => {
+          onDone={(tagMap, quoteMap, picked) => {
             setTags(tagMap)
             setQuotes(quoteMap)
+            setBaseline(computeBaseline(picked))
             setPhase('analyzing')
           }}
         />
       )}
       {phase === 'analyzing' && <Analyzing onDone={() => setPhase('plan')} />}
       {phase === 'plan' && (
-        <Plan name={name} pattern={pattern} tags={tags} quotes={quotes} onNext={() => setPhase('workout')} />
+        <Plan name={name} pattern={pattern} tags={tags} quotes={quotes} baseline={baseline} onNext={() => setPhase('workout')} />
       )}
       {phase === 'workout' && (
         <div className="ob-workout">
@@ -55,7 +58,7 @@ export default function OnboardingFlow({ onDone }) {
         </div>
       )}
       {phase === 'earned' && <Earned name={name} pattern={pattern} workout={workout} onNext={() => setPhase('paywall')} />}
-      {phase === 'paywall' && <Paywall name={name} pattern={pattern} tags={tags} quotes={quotes} workout={workout} onDone={onDone} />}
+      {phase === 'paywall' && <Paywall name={name} pattern={pattern} tags={tags} workout={workout} onDone={onDone} />}
     </div>
   )
 }
@@ -71,114 +74,67 @@ function Welcome({ onNext, onSkip }) {
       </div>
       <h1 className="ob-logo">kael</h1>
       <p className="ob-tag">the gym for your social skills</p>
-      <p className="ob-sub">train the moments, not the theory.</p>
+      <p className="ob-sub">train moments. not theory.</p>
       <div className="ob-bottom">
-        <button className="btn btn-coral btn-block" onClick={onNext}>start my intake</button>
+        <button className="btn btn-coral btn-block" onClick={onNext}>let's go</button>
         <button className="ob-skip" onClick={onSkip}>skip for now</button>
       </div>
     </div>
   )
 }
 
-/* ================= Interview ================= */
-function Interview({ name, setName, onDone }) {
-  const [messages, setMessages] = useState([])
-  const [stepIdx, setStepIdx] = useState(0)
-  const [typing, setTyping] = useState(false)
-  const [ready, setReady] = useState(false)
+/* ================= Questions: one per screen ================= */
+function Questions({ name, setName, onDone }) {
+  const [idx, setIdx] = useState(0)
   const [draft, setDraft] = useState('')
-  const tagsRef = useRef({})
-  const quotesRef = useRef({})
-  const scrollRef = useRef(null)
-  const timers = useRef([])
-  const step = INTERVIEW[stepIdx]
-
-  useEffect(() => {
-    setReady(false)
-    let delay = 400
-    step.lines.forEach((line, i) => {
-      const dur = Math.min(750, 260 + line.length * 11)
-      timers.current.push(setTimeout(() => setTyping(true), delay - 260))
-      timers.current.push(
-        setTimeout(() => {
-          setTyping(false)
-          setMessages((m) => [...m, { who: 'fox', text: line.replace('{name}', name || 'friend') }])
-          if (i === step.lines.length - 1) timers.current.push(setTimeout(() => setReady(true), 240))
-        }, delay + dur),
-      )
-      delay += dur + 460
-    })
-    return () => timers.current.forEach(clearTimeout)
-  }, [stepIdx])
-
-  useEffect(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
-  }, [messages, typing, ready])
+  const [tags] = useState({})
+  const [quotes] = useState({})
+  const [picked] = useState([])
+  const q = QUESTIONS[idx]
 
   function advance() {
-    if (stepIdx + 1 < INTERVIEW.length) setStepIdx(stepIdx + 1)
-    else setTimeout(() => onDone(tagsRef.current, quotesRef.current), 450)
+    if (idx + 1 < QUESTIONS.length) setIdx(idx + 1)
+    else onDone(tags, quotes, picked)
   }
 
   function pick(opt) {
-    tagsRef.current[step.id] = opt.tag
-    quotesRef.current[step.id] = strip(opt.label)
-    setMessages((m) => [...m, { who: 'me', text: opt.label }])
-    advance()
+    tags[q.id] = opt.tag
+    quotes[q.id] = strip(opt.label)
+    picked.push(opt)
+    setTimeout(advance, 160)
   }
 
-  function submitName() {
-    const n = draft.trim() || 'Friend'
-    setName(n)
-    setMessages((m) => [...m, { who: 'me', text: n }])
+  function submitName(e) {
+    e.preventDefault()
+    setName(draft.trim() || 'Friend')
     setDraft('')
     advance()
   }
 
-  const progress = Math.max(0.06, stepIdx / INTERVIEW.length)
-
   return (
-    <div className="ob-page">
+    <div className="ob-page q-page" key={idx}>
       <div className="ob-head">
-        <Fox pose={typing ? 'think' : 'happy'} size={42} />
+        <Fox pose="happy" size={42} />
         <div className="ob-progress">
-          <div className="ob-progress-fill" style={{ width: `${progress * 100}%` }} />
+          <div className="ob-progress-fill" style={{ width: `${Math.max(6, (idx / QUESTIONS.length) * 100)}%` }} />
         </div>
+        <span className="q-count">{idx + 1}/{QUESTIONS.length}</span>
       </div>
-      <div className="ob-chat" ref={scrollRef}>
-        {messages.map((m, i) => (
-          <div key={i} className={'ob-msg ' + m.who}>
-            <div className="ob-bubble">{m.text}</div>
-          </div>
-        ))}
-        {typing && (
-          <div className="ob-msg fox">
-            <div className="ob-bubble ob-typing">
-              <span /><span /><span />
-            </div>
-          </div>
-        )}
-        {ready && !step.input && (
-          <div className="ob-opts">
-            {step.caption && <p className="ob-caption">{step.caption}</p>}
-            {step.options.map((opt, i) => (
-              <button className="ob-opt" key={i} style={{ animationDelay: `${i * 0.06}s` }} onClick={() => pick(opt)}>
+      <div className="q-body">
+        <h2 className="q-title">{q.title}</h2>
+        {q.input ? (
+          <form className="ob-name-row" onSubmit={submitName}>
+            <input autoFocus value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="your name…" />
+            <button className="btn btn-coral" type="submit">→</button>
+          </form>
+        ) : (
+          <div className="q-opts">
+            {q.options.map((opt, i) => (
+              <button className="q-opt" key={i} style={{ animationDelay: `${i * 0.05}s` }} onClick={() => pick(opt)}>
                 {opt.label}
               </button>
             ))}
           </div>
-        )}
-        {ready && step.input && (
-          <form
-            className="ob-name-row"
-            onSubmit={(e) => {
-              e.preventDefault()
-              submitName()
-            }}
-          >
-            <input autoFocus value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="your name…" />
-            <button className="btn btn-coral" type="submit">→</button>
-          </form>
         )}
       </div>
     </div>
@@ -189,9 +145,9 @@ function Interview({ name, setName, onDone }) {
 function Analyzing({ onDone }) {
   const [line, setLine] = useState(0)
   useEffect(() => {
-    const t1 = setTimeout(() => setLine(1), 850)
-    const t2 = setTimeout(() => setLine(2), 1700)
-    const t3 = setTimeout(onDone, 2600)
+    const t1 = setTimeout(() => setLine(1), 800)
+    const t2 = setTimeout(() => setLine(2), 1600)
+    const t3 = setTimeout(onDone, 2400)
     return () => [t1, t2, t3].forEach(clearTimeout)
   }, [])
   return (
@@ -207,50 +163,43 @@ function Analyzing({ onDone }) {
   )
 }
 
-/* ================= The mirror + the plan ================= */
-function Plan({ name, pattern, tags, quotes, onNext }) {
+/* ================= Plan ================= */
+function Plan({ name, pattern, tags, quotes, baseline, onNext }) {
   const prog = pattern.program
   return (
     <div className="ob-page ob-scroll">
-      <p className="ob-eyebrow">from what you've told me, {name}…</p>
-      <h2 className="ob-h2">you sound like</h2>
+      <p className="ob-eyebrow">ok {name}, here's my read</p>
       <div className="ob-arch">{pattern.archetype}</div>
       <div className="ob-card">
         <p>{pattern.blurb}</p>
       </div>
 
-      <p className="ob-eyebrow" style={{ marginTop: 10 }}>so here's your program</p>
-      <h2 className="ob-h2">
-        {prog.emoji} {prog.name}
-      </h2>
       <div className="ob-card">
-        <div className="ob-trace">
-          <p>
-            <b>starts with:</b> {prog.focus} — because you said <em>“{quotes.pattern}”</em>
-          </p>
-          <p>
-            <b>set in:</b> {CONTEXT_LABELS[tags.context]} — where you said it stings
-          </p>
-          <p>
-            <b>goal on file:</b> <em>“{quotes.aspiration}”</em>
-          </p>
-        </div>
-      </div>
-
-      <div className="ob-card">
-        <span className="ob-mini">your skill levels</span>
+        <span className="ob-mini">your starting read</span>
         {SKILL_KEYS.map((k) => (
           <div className="plan-skill" key={k}>
             <span>{k}</span>
-            <div className="plan-skill-bar" />
-            <em>not measured yet</em>
+            <div className="ps-track">
+              <div className="ps-fill" style={{ width: `${baseline[k]}%` }} />
+            </div>
+            <b>{baseline[k]}</b>
           </div>
         ))}
-        <p className="plan-skill-note">kael maps your real levels by watching you train — not by quizzing you.</p>
+        <p className="plan-skill-note">from your answers. gets real as you train.</p>
+      </div>
+
+      <div className="ob-card plan-prog">
+        <span className="ob-mini">your program</span>
+        <b>{prog.emoji} {prog.name}</b>
+        <div className="ob-trace">
+          <p><b>first target:</b> {prog.focus}</p>
+          <p><b>arena:</b> {CONTEXT_LABELS[tags.context]}, where you said it's worst</p>
+          <p><b>goal:</b> “{quotes.aspiration}”</p>
+        </div>
       </div>
 
       <button className="btn btn-coral btn-block" onClick={onNext}>
-        start my first workout — 3 reps, 90 seconds
+        first workout · 3 reps
       </button>
     </div>
   )
@@ -264,31 +213,31 @@ function Earned({ name, pattern, workout, onNext }) {
       <div className="ob-pay-fox">
         <Fox pose="cheer" size={104} />
       </div>
-      <h2 className="ob-h2 center">day 1 — done, {name}.</h2>
-      <p className="ob-sub2">that wasn't a demo. your training has started.</p>
+      <h2 className="ob-h2 center">day 1. done.</h2>
+      <p className="ob-sub2">that counted, {name}.</p>
       <div className="earned-chips">
-        <span className="earned-chip">🔥 day 1 streak lit</span>
-        <span className="earned-chip">⚡ {workout?.xp || 0} XP banked</span>
+        <span className="earned-chip">🔥 streak lit</span>
+        <span className="earned-chip">⚡ {workout?.xp || 0} XP</span>
         <span className="earned-chip">🏋️ {total} reps</span>
       </div>
       <div className="ob-card">
         <span className="ob-mini">{pattern.program.emoji} {pattern.program.skillName} · Lv 1</span>
         <b>{pattern.tier}</b>
-        <p className="small" style={{ marginTop: 3 }}>everyone starts here. nobody stays here.</p>
+        <p className="small" style={{ marginTop: 3 }}>everyone starts here. nobody stays.</p>
       </div>
       <div className="ob-card">
-        <span className="ob-mini">✦ early read — one session in</span>
+        <span className="ob-mini">✦ early read</span>
         <p className="small">{noticedLine(workout?.tally || {})}</p>
       </div>
       <button className="btn btn-coral btn-block" onClick={onNext}>
-        keep my program going
+        keep going
       </button>
     </div>
   )
 }
 
 /* ================= Paywall ================= */
-function Paywall({ name, pattern, tags, quotes, workout, onDone }) {
+function Paywall({ name, pattern, tags, workout, onDone }) {
   const [plan, setPlan] = useState('annual')
   const stake = COST_LINES[tags.cost] || 'get good with people'
   return (
@@ -302,18 +251,18 @@ function Paywall({ name, pattern, tags, quotes, workout, onDone }) {
         {pattern.archetype.toLowerCase()}'s plan to {stake}
       </h2>
       <div className="ob-card tmrw">
-        <span className="ob-mini">📅 tomorrow's set — ready and waiting</span>
-        <p className="small"><b>{pattern.tomorrow}</b> · 3 reps · set in {CONTEXT_LABELS[tags.context]}</p>
+        <span className="ob-mini">📅 tomorrow's set, ready</span>
+        <p className="small"><b>{pattern.tomorrow}</b> · 3 reps · {CONTEXT_LABELS[tags.context]}</p>
       </div>
       <div className="ob-checks">
-        <p>✅ your program: {pattern.program.emoji} {pattern.program.name}, adapting as you train</p>
-        <p>✅ unlimited reps, difficulty that climbs with you</p>
-        <p>✅ roleplays that push back like real people</p>
-        <p>✅ your real skill levels, measured from play</p>
+        <p>✅ {pattern.program.emoji} {pattern.program.name}, adapting as you train</p>
+        <p>✅ unlimited reps, rising difficulty</p>
+        <p>✅ roleplays that push back</p>
+        <p>✅ real levels, measured from play</p>
       </div>
       <button className={'ob-plan' + (plan === 'annual' ? ' on' : '')} onClick={() => setPlan('annual')}>
         <div>
-          <b>Yearly — the year you get good with people</b>
+          <b>Yearly. the year you get good with people</b>
           <span>$59.99/yr · $4.99/mo</span>
         </div>
         <span className="ob-badge">7 days free</span>

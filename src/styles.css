@@ -1711,6 +1711,46 @@ input { font-family: inherit; }
 .proj-tag { font-size: 10px; font-weight: 800; fill: var(--ink-faint); font-family: var(--body); }
 .proj-tag.strong { fill: var(--teal-deep); }
 
+/* one-question-per-screen */
+.q-page { animation: q-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes q-in { from { opacity: 0; transform: translateX(34px); } }
+.q-count { font-size: 12px; font-weight: 800; color: var(--ink-faint); white-space: nowrap; }
+.q-body { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 0 22px 70px; }
+.q-title {
+  font-family: var(--display);
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.15;
+  margin-bottom: 20px;
+}
+.q-opts { display: flex; flex-direction: column; gap: 10px; }
+.q-opt {
+  text-align: left;
+  background: var(--card);
+  border: 2px solid var(--line-strong);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-card);
+  padding: 15px 16px;
+  font-size: 15.5px;
+  font-weight: 700;
+  line-height: 1.35;
+  transition: transform 0.08s, box-shadow 0.08s, border-color 0.12s;
+  animation: msg-in 0.3s both;
+}
+.q-opt:active { transform: translateY(3px); box-shadow: none; }
+.q-opt:hover { border-color: var(--coral); }
+
+/* baseline bars on the plan screen */
+.ps-track { flex: 1; height: 11px; border-radius: 999px; background: var(--line); overflow: hidden; }
+.ps-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--gold), var(--coral));
+  animation: fill-in 0.9s 0.2s cubic-bezier(0.3, 0.8, 0.3, 1) both;
+}
+.plan-skill b { font-family: var(--display); font-size: 13px; width: 24px; text-align: right; flex-shrink: 0; }
+.plan-prog > b { display: block; font-family: var(--display); font-size: 19px; margin-bottom: 8px; }
+
 /* plan: traceability + unmapped skills */
 .ob-trace p { font-size: 13.5px; font-weight: 700; line-height: 1.5; margin-bottom: 8px; }
 .ob-trace p:last-child { margin-bottom: 0; }
