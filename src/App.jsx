@@ -4,6 +4,7 @@ import HomeScreen from './components/HomeScreen.jsx'
 import SituationScreen from './components/SituationScreen.jsx'
 import SituationsScreen from './components/SituationsScreen.jsx'
 import LearnScreen from './components/LearnScreen.jsx'
+import YouScreen from './components/YouScreen.jsx'
 import { FLOWS, SEED_SITUATIONS, routeFlow } from './data.js'
 
 const TABS = [
@@ -35,6 +36,16 @@ const TABS = [
         <path d="M4 10.5h13" />
         <path d="M5.5 7v7M15.5 7v7" />
         <path d="M2.8 8.5v4M18.2 8.5v4" />
+      </svg>
+    ),
+  },
+  {
+    id: 'you',
+    label: 'You',
+    icon: (
+      <svg width="21" height="21" viewBox="0 0 21 21" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="10.5" cy="7" r="3.5" />
+        <path d="M4 18c.8-3.2 3.4-5 6.5-5s5.7 1.8 6.5 5" />
       </svg>
     ),
   },
@@ -220,9 +231,13 @@ export default function App() {
             <div className="tab-pane">
               <SituationsScreen situations={situations.filter((s) => s.kind !== 'drill')} onOpen={setActiveId} />
             </div>
-          ) : (
+          ) : tab === 'learn' ? (
             <div className="tab-pane">
               <LearnScreen onDrill={startDrill} />
+            </div>
+          ) : (
+            <div className="tab-pane">
+              <YouScreen />
             </div>
           )}
 

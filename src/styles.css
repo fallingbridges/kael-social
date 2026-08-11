@@ -1078,6 +1078,153 @@ input { font-family: inherit; }
 
 .wrap-chip { border-color: var(--sage); color: #35622f; background: var(--sage-soft); }
 
+/* ————— You tab: growth profile ————— */
+
+.blob.you { background: linear-gradient(140deg, #ffe0a3, var(--butter) 55%, #f0a848); }
+
+.you-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 6px 0 16px;
+  animation: msg-in 0.5s both;
+}
+.you-head .page-title { margin: 0 0 2px; }
+
+.score-hero {
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: var(--r-lg);
+  padding: 18px 16px 12px;
+  margin-bottom: 18px;
+  box-shadow: 0 16px 36px -14px rgba(36, 27, 22, 0.55);
+  animation: msg-in 0.5s 0.05s both;
+}
+.score-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--butter);
+  margin-bottom: 4px;
+}
+.score-num {
+  font-family: var(--display);
+  font-size: 46px;
+  font-weight: 700;
+  line-height: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.score-delta {
+  font-family: var(--body);
+  font-size: 12px;
+  font-weight: 700;
+  color: #8fd486;
+  background: rgba(159, 206, 154, 0.16);
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+.growth-chart { display: block; width: 100%; }
+.growth-line {
+  stroke-dasharray: 600;
+  stroke-dashoffset: 600;
+  animation: draw-line 1.4s 0.4s cubic-bezier(0.3, 0.6, 0.3, 1) forwards;
+}
+@keyframes draw-line { to { stroke-dashoffset: 0; } }
+.score-foot {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #b3a69b;
+  margin-top: 6px;
+}
+
+.score-row {
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-card);
+  padding: 13px 15px 11px;
+  margin-bottom: 10px;
+  animation: msg-in 0.5s both;
+}
+.score-row-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.score-row-top b { font-size: 14.5px; font-weight: 600; }
+.score-vals {
+  font-family: var(--display);
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.score-vals em { font-style: normal; color: var(--ink-faint); font-size: 12px; }
+.score-up {
+  font-family: var(--body);
+  font-size: 11px;
+  font-weight: 800;
+  color: #35622f;
+  background: var(--sage-soft);
+  padding: 3px 8px;
+  border-radius: 999px;
+  margin-left: 3px;
+}
+.score-bar {
+  position: relative;
+  height: 11px;
+  border-radius: 999px;
+  background: var(--paper-2);
+  overflow: hidden;
+  margin-bottom: 7px;
+}
+.score-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--butter), var(--coral));
+  animation: fill-in 1s 0.3s cubic-bezier(0.3, 0.8, 0.3, 1) both;
+}
+@keyframes fill-in { from { width: 0; } }
+.score-base {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2.5px;
+  background: var(--ink);
+  opacity: 0.45;
+  z-index: 2;
+  border-radius: 2px;
+}
+.score-note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; font-style: italic; }
+
+.you-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.stat {
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-card);
+  padding: 13px 6px 11px;
+  text-align: center;
+  animation: msg-in 0.5s both;
+}
+.stat b { display: block; font-family: var(--display); font-size: 22px; font-weight: 700; line-height: 1.05; margin-bottom: 2px; }
+.stat span { font-size: 10px; font-weight: 600; color: var(--ink-faint); line-height: 1.2; display: block; }
+
 /* ————— Tab bar ————— */
 
 .tabbar {

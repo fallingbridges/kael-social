@@ -1278,3 +1278,31 @@ export const RECOMMENDED = {
   skill: 'Boundaries',
   because: 'How do I say no?',
 }
+
+// ——— the You tab: growth & progress profile ———
+// baseline comes from onboarding; everything is framed as distance traveled.
+
+export const PROFILE = {
+  score: 68,
+  baseline: 54,
+  day: 34,
+  weekly: [54, 56, 55, 59, 61, 60, 64, 68],
+}
+
+export const SKILL_SCORES = [
+  { key: 'Reading people', baseline: 58, now: 72, note: 'your sharpest climb' },
+  { key: 'Conversation', baseline: 70, now: 81, note: 'strong and rising' },
+  { key: 'Conflict', baseline: 52, now: 64, note: 'the standup paid off' },
+  { key: 'Dating', baseline: 55, now: 63, note: 'less spiraling, more reading' },
+  { key: 'Assertiveness', baseline: 44, now: 51, note: 'slow but real' },
+  { key: 'Boundaries', baseline: 38, now: 46, note: 'first clean no logged' },
+]
+
+export const YOU_STATS = [
+  { num: '12', label: 'situations navigated' },
+  { num: '23', label: 'texts decoded' },
+  { num: '8', label: 'drill reps' },
+  { num: '6', label: 'hard talks survived' },
+  { num: '🔥 3', label: 'day streak' },
+  { num: '6/6', label: 'skills improving' },
+]
