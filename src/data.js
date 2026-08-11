@@ -5,12 +5,13 @@
 
 const t = (text) => ({ type: 'text', text })
 
-export const CATEGORIES = [
-  { id: 'convo', emoji: '💬', label: 'A conversation', send: "I never know how to keep a conversation going past small talk." },
-  { id: 'dating', emoji: '❤️', label: 'Dating', send: 'She read my message yesterday and just replied "k".' },
-  { id: 'work', emoji: '💼', label: 'Work', send: 'My manager criticized my work in front of everyone and I got defensive.' },
+export const HOME_CHIPS = [
+  { id: 'decode', emoji: '🔍', label: 'Decode a text', send: "Decode this: she saw my message yesterday and just replied 'k'." },
+  { id: 'caption', emoji: '📸', label: 'Caption this photo', action: 'photo-caption' },
+  { id: 'overthink', emoji: '🌀', label: 'Overthinking someone', send: "I can't stop replaying what I said to her at the party." },
   { id: 'conflict', emoji: '⚡', label: 'Conflict', send: 'My friend made a passive-aggressive comment and I shut down.' },
-  { id: 'family', emoji: '👥', label: 'Friends / family', send: "My sister keeps asking me for favors and I can't say no." },
+  { id: 'read', emoji: '🔮', label: 'Help me read them', send: "He's been hot and cold with me all week — help me read him." },
+  { id: 'sayit', emoji: '💬', label: 'How to say it', send: "I need to tell my roommate this living situation isn't working." },
 ]
 
 export const FLOWS = {
@@ -1006,6 +1007,85 @@ export const FLOWS = {
           t("you can skip the fight without starting the freeze: one warm sentence, then genuinely let it go."),
         ],
         chips: [{ label: 'Run it again', next: 'start' }],
+      },
+    },
+  },
+
+  // ————— photo flows —————
+  'photo-caption': {
+    title: 'Caption this photo',
+    emoji: '📸',
+    keywords: ['caption'],
+    observation: null,
+    nodes: {
+      start: {
+        blocks: [
+          t("ok, good photo 📸 a caption's job is to add a voice, not describe the pixels. here's your range:"),
+          {
+            type: 'says',
+            options: [
+              { tone: 'Confident', text: 'main character behavior, documented' },
+              { tone: 'Playful', text: "posting this before I overthink it (I overthought it)" },
+              { tone: 'Understated', text: 'good day.' },
+            ],
+          },
+          t('rule of thumb: if the photo is loud, the caption whispers. if the photo is quiet, the caption can talk.'),
+        ],
+        chips: [{ label: 'Another round', next: 'more' }],
+      },
+      more: {
+        blocks: [
+          {
+            type: 'says',
+            options: [
+              { tone: 'Dry', text: 'no thoughts, just this' },
+              { tone: 'Bold', text: "you're welcome" },
+              { tone: 'Soft', text: 'kept this one for myself for a while' },
+            ],
+          },
+        ],
+        chips: [{ label: 'Another round', next: 'start' }],
+      },
+    },
+  },
+
+  'photo-decode': {
+    title: 'Decode this screenshot',
+    emoji: '🔍',
+    keywords: [],
+    observation: 'You screenshot instead of spiraling now — outsourcing the 3am read to daylight hours is growth.',
+    nodes: {
+      start: {
+        blocks: [
+          t('evidence received 🔍 reading the thread, hold on…'),
+          {
+            type: 'vibe',
+            value: 58,
+            label: 'thread reading',
+            verdict: 'mixed, but workable',
+            note: "their effort dips at the end but the questions are still coming — interest with a battery problem, not disinterest.",
+          },
+          {
+            type: 'flags',
+            red: ['Reply gaps getting longer', 'You wrote 3x more than them in the last stretch'],
+            green: ['Still asking you questions', 'The inside joke came back — that\'s real'],
+          },
+          t("my advice: shorten your next two texts by half, end one with no question, and watch what they do with the space."),
+        ],
+        chips: [{ label: 'What should I send?', next: 'say' }],
+      },
+      say: {
+        blocks: [
+          {
+            type: 'says',
+            options: [
+              { tone: 'Easy', text: 'ok this thread deserves better than my essays. highlight of your day — go' },
+              { tone: 'Playful', text: "I'm going to need a faster correspondent. applications open 😌" },
+              { tone: 'Chill', text: '(match their length for two texts. let the thread breathe.)' },
+            ],
+          },
+        ],
+        chips: [],
       },
     },
   },

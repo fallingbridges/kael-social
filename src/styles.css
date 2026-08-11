@@ -564,6 +564,19 @@ input { font-family: inherit; }
   color: var(--ink);
   min-width: 0;
 }
+.composer .plus-btn {
+  width: 36px;
+  height: 36px;
+  margin-left: -10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  color: var(--ink-faint);
+  transition: color 0.15s, transform 0.15s;
+}
+.composer .plus-btn:hover { color: var(--coral-deep); }
+.composer .plus-btn:active { transform: scale(0.88); }
 .composer input::placeholder { color: var(--ink-faint); }
 .send-btn {
   width: 40px;
@@ -803,6 +816,65 @@ input { font-family: inherit; }
 }
 .sit-arrow { color: var(--ink-faint); font-size: 15px; flex-shrink: 0; }
 .sit-when { display: block; font-size: 11.5px; color: var(--ink-faint); font-weight: 500; margin-top: 2px; }
+
+/* user photo attachments */
+.user-stack { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; min-width: 0; }
+.photo-bubble {
+  max-width: 190px;
+  max-height: 240px;
+  border-radius: var(--r-md);
+  border-bottom-right-radius: 6px;
+  border: 2px solid var(--ink);
+  object-fit: cover;
+  box-shadow: var(--shadow-card);
+}
+
+/* home practice strip */
+.learn-strip {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 2px 2px 6px;
+  margin: 0 -18px;
+  padding-left: 18px;
+  padding-right: 18px;
+}
+.learn-strip::-webkit-scrollbar { display: none; }
+.mini-sk {
+  flex: 0 0 108px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  text-align: left;
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-card);
+  padding: 11px 11px 10px;
+  transition: transform 0.18s cubic-bezier(0.2, 0.9, 0.3, 1.4), border-color 0.18s;
+  animation: msg-in 0.45s both;
+}
+.mini-sk:active { transform: scale(0.93); }
+.mini-sk:hover { border-color: var(--coral); }
+.mini-sk-badge {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  background: var(--paper-2);
+}
+.mini-sk-badge.coral { background: var(--coral-soft); }
+.mini-sk-badge.butter { background: var(--butter-soft); }
+.mini-sk-badge.sage { background: var(--sage-soft); }
+.mini-sk b { font-family: var(--display); font-size: 12.5px; font-weight: 600; line-height: 1.1; }
+.mini-sk-sub { font-size: 10px; font-weight: 700; color: var(--ink-faint); }
+.mini-sk.more { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.mini-sk.more .mini-sk-badge { background: #3c322b; }
+.mini-sk.more .mini-sk-sub { color: #b3a69b; }
 
 /* ————— Learn tab: the practice gym ————— */
 

@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { Blob } from './bits.jsx'
-import { CATEGORIES } from '../data.js'
+import { HOME_CHIPS, SKILLS } from '../data.js'
 
 function greeting() {
   const h = new Date().getHours()
@@ -10,16 +10,33 @@ function greeting() {
   return "evening. what's happening?"
 }
 
-export default function HomeScreen({ situations, onNew, onOpen, onFollowUp, onSeeAll }) {
+export default function HomeScreen({ situations, onNew, onOpen, onFollowUp, onSeeAll, onDrill, onLearn, onPhoto }) {
   const [input, setInput] = useState('')
+  const fileRef = useRef(null)
+  const photoKind = useRef('photo-decode')
   const followUps = situations.filter((s) => s.followUp)
   const recent = situations.slice(0, 3)
+  const practice = SKILLS.slice(0, 6)
 
   function submit(e) {
     e.preventDefault()
     if (!input.trim()) return
     onNew(input.trim())
     setInput('')
+  }
+
+  function pickPhoto(kind) {
+    photoKind.current = kind
+    fileRef.current?.click()
+  }
+
+  function fileChosen(e) {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = () => onPhoto(photoKind.current, reader.result)
+    reader.readAsDataURL(file)
   }
 
   return (
@@ -37,6 +54,13 @@ export default function HomeScreen({ situations, onNew, onOpen, onFollowUp, onSe
         <p className="page-sub">Any situation with people — online or offline. Bring it.</p>
 
         <form className="composer home-composer" onSubmit={submit}>
+          <button type="button" className="plus-btn" onClick={() => pickPhoto('photo-decode')} title="Add a photo">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="1.5" y="3.5" width="15" height="12" rx="3" />
+              <circle cx="9" cy="9.5" r="3" />
+              <path d="M5.5 3.5L6.8 1.8h4.4l1.3 1.7" />
+            </svg>
+          </button>
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -48,10 +72,15 @@ export default function HomeScreen({ situations, onNew, onOpen, onFollowUp, onSe
             </svg>
           </button>
         </form>
+        <input ref={fileRef} type="file" accept="image/*" onChange={fileChosen} style={{ display: 'none' }} />
 
         <div className="cat-chips">
-          {CATEGORIES.map((c) => (
-            <button className="chip" key={c.id} onClick={() => onNew(c.send)}>
+          {HOME_CHIPS.map((c) => (
+            <button
+              className="chip"
+              key={c.id}
+              onClick={() => (c.action ? pickPhoto(c.action) : onNew(c.send))}
+            >
               <span>{c.emoji}</span> {c.label}
             </button>
           ))}
@@ -77,6 +106,29 @@ export default function HomeScreen({ situations, onNew, onOpen, onFollowUp, onSe
             ))}
           </div>
         )}
+
+        <div className="home-sect">
+          <div className="home-sect-head">
+            <span className="sect-label">Practice a skill</span>
+            <button className="see-all" onClick={onLearn}>
+              All skills →
+            </button>
+          </div>
+          <div className="learn-strip">
+            {practice.map((s) => (
+              <button className="mini-sk" key={s.id} onClick={() => onDrill(s)}>
+                <span className={`mini-sk-badge ${s.tint}`}>{s.emoji}</span>
+                <b>{s.skill}</b>
+                <span className="mini-sk-sub">{s.reps > 0 ? `🏋️ ${s.reps} rep${s.reps === 1 ? '' : 's'}` : '2 min drill'}</span>
+              </button>
+            ))}
+            <button className="mini-sk more" onClick={onLearn}>
+              <span className="mini-sk-badge">✨</span>
+              <b>All skills</b>
+              <span className="mini-sk-sub">{SKILLS.length} to train</span>
+            </button>
+          </div>
+        </div>
 
         <div className="home-sect">
           <div className="home-sect-head">

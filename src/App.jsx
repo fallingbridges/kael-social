@@ -133,6 +133,36 @@ export default function App() {
     kaelSays(id, next.blocks, option.next)
   }
 
+  // photo from the home screen → new situation (decode or caption flow)
+  function newPhotoSituation(flowId, src) {
+    const flow = FLOWS[flowId]
+    const id = 'sit-' + nextId++
+    const ask = flowId === 'photo-caption' ? 'caption this for me' : 'decode this for me'
+    setSituations((all) => [
+      {
+        id,
+        title: flow.title,
+        emoji: flow.emoji,
+        when: 'now',
+        flowId,
+        nodeId: 'start',
+        messages: [{ from: 'user', blocks: [{ type: 'photo', src }, { type: 'text', text: ask }] }],
+      },
+      ...all,
+    ])
+    setActiveId(id)
+    kaelSays(id, flow.nodes.start.blocks, 'start')
+  }
+
+  // photo attached inside an existing thread → Kael reads it in place
+  function photoInThread(id, src) {
+    patch(id, (s) => ({
+      ...s,
+      messages: [...s.messages, { from: 'user', blocks: [{ type: 'photo', src }] }],
+    }))
+    kaelSays(id, FLOWS['photo-decode'].nodes.start.blocks)
+  }
+
   // start (or resume) a drill from the Learn tab — drills open with Kael talking
   function startDrill(drill) {
     const existing = situations.find((s) => s.flowId === drill.id)
@@ -171,6 +201,7 @@ export default function App() {
               onChip={chip}
               onFree={free}
               onWrap={wrap}
+              onPhoto={photoInThread}
             />
           ) : tab === 'home' ? (
             <HomeScreen
@@ -179,6 +210,9 @@ export default function App() {
               onOpen={setActiveId}
               onFollowUp={followUp}
               onSeeAll={() => setTab('situations')}
+              onDrill={startDrill}
+              onLearn={() => setTab('learn')}
+              onPhoto={newPhotoSituation}
             />
           ) : tab === 'situations' ? (
             <div className="tab-pane">

@@ -3,9 +3,10 @@ import { Blob } from './bits.jsx'
 import KaelBlock from './blocks.jsx'
 import { FLOWS } from '../data.js'
 
-export default function SituationScreen({ situation, onBack, onChip, onFree, onWrap }) {
+export default function SituationScreen({ situation, onBack, onChip, onFree, onWrap, onPhoto }) {
   const [input, setInput] = useState('')
   const scrollRef = useRef(null)
+  const fileRef = useRef(null)
   const flow = FLOWS[situation.flowId]
   const node = flow.nodes[situation.nodeId]
 
@@ -46,7 +47,15 @@ export default function SituationScreen({ situation, onBack, onChip, onFree, onW
         {situation.messages.map((m, i) =>
           m.from === 'user' ? (
             <div className="msg-row user" key={i}>
-              <div className="bubble">{m.blocks[0].text}</div>
+              <div className="user-stack">
+                {m.blocks.map((b, j) =>
+                  b.type === 'photo' ? (
+                    <img className="photo-bubble" src={b.src} alt="attached" key={j} />
+                  ) : (
+                    <div className="bubble" key={j}>{b.text}</div>
+                  ),
+                )}
+              </div>
             </div>
           ) : (
             <div className="msg-row kael" key={i}>
@@ -96,6 +105,18 @@ export default function SituationScreen({ situation, onBack, onChip, onFree, onW
           </div>
         )}
         <form className="composer" onSubmit={submit}>
+          <button
+            type="button"
+            className="plus-btn"
+            title="Add a photo or screenshot"
+            onClick={() => fileRef.current?.click()}
+          >
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="1.5" y="3.5" width="15" height="12" rx="3" />
+              <circle cx="9" cy="9.5" r="3" />
+              <path d="M5.5 3.5L6.8 1.8h4.4l1.3 1.7" />
+            </svg>
+          </button>
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -107,6 +128,20 @@ export default function SituationScreen({ situation, onBack, onChip, onFree, onW
             </svg>
           </button>
         </form>
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/*"
+          style={{ display: 'none' }}
+          onChange={(e) => {
+            const file = e.target.files?.[0]
+            e.target.value = ''
+            if (!file) return
+            const reader = new FileReader()
+            reader.onload = () => onPhoto(situation.id, reader.result)
+            reader.readAsDataURL(file)
+          }}
+        />
       </div>
     </div>
   )
