@@ -851,41 +851,6 @@ input { font-family: inherit; }
   flex-shrink: 0;
 }
 
-.tag-chips {
-  display: flex;
-  gap: 7px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  padding: 2px;
-  margin-bottom: 14px;
-}
-.tag-chips::-webkit-scrollbar { display: none; }
-.tag-chip {
-  flex-shrink: 0;
-  font-size: 12px;
-  font-weight: 700;
-  padding: 7px 12px;
-  border-radius: 999px;
-  background: var(--card);
-  border: 1.5px solid var(--line);
-  color: var(--ink-soft);
-  transition: all 0.15s;
-}
-.tag-chip:active { transform: scale(0.93); }
-.tag-chip.on { background: var(--ink); border-color: var(--ink); color: var(--paper); }
-.tag-n { opacity: 0.55; font-weight: 600; }
-
-.sit-tags { display: flex; gap: 6px; margin-top: 3px; }
-.sit-tags em {
-  font-style: normal;
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--coral-deep);
-  background: var(--coral-soft);
-  padding: 2px 7px;
-  border-radius: 999px;
-}
-
 .empty-note {
   text-align: center;
   font-size: 13px;
